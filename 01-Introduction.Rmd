@@ -1,0 +1,89 @@
+---
+title: "Introduction"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Setting up your R environment
+
+Before we can use the analytic tools provided by Hades we need to set up our analytic envrionment and make sure everything is installed and working. Since Java is a fundamental dependency to many of the Hades packages we will install Java and the R wrapper, rJava, first.
+
+Installing Java will depend on your system and is done outside of R. You want to install the Oracle JDK (64 bit version if on Windows).
+
+To verify that Java has been installed on your system run
+```{r}
+system("java -version")
+```
+
+If you get a version number instead of an error then you should be good to go. Next we will install the rJava package which lets us access compiled Java code from R.
+
+```{r, eval=F, message=F}
+install.packages("rJava")
+```
+
+
+
+```{r}
+library(rJava)
+.jinit()
+print(.jclassPath())
+```
+
+If you see a path instead of an error then rJava is working.
+
+# Create a Github account and personal access token
+Since many of the OHDSI packages are released on github.com you will need to download the packages from github. While it is possible to download a few packages without an account you will want to create an account and a personal access token if you are going to be installing many OHDSI packages.
+
+- Go to https://github.com/ to sign up for an account
+- Create a personal access token by followling the instructions at https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
+
+Once you have your personal access token we need to save it along with other sensitive information in our .Renviron file so that we can access these values using environment variables throughout the course.
+
+Open your .Renviron file by running
+```{r}
+# install.packages("usethis)
+usethis::edit_r_environ()
+```
+
+Add your github personal access token along with your database password
+
+```{bash, eval=F}
+GITHUB_PAT=llksdjsdfjsdw98sd88sdf9sdf990sdf89we0sd9fsdf9009w9
+DB_PASSWORD=PutYourDatabasePasswordHere
+WEBAPI_PASSWORD=PutYourAtlasPasswordHere
+```
+
+Save and close the file. This is the one and only place where we will store our passwords in plain text. 
+
+We can protect this file by running
+```{r}
+system("ls -la ~/.Renviron") # default permissions
+system("chmod 600 ~/.Renviron")
+system("ls -la ~/.Renviron") # restricted permissions
+```
+
+
+
+# Install Hades
+
+Hades consists of a large number of packages. Instead of installing them all separately we can install them all at once by installing the Hades pacakge. This can take a while to run.
+```{r, eval=F}
+devtools::install_github("ablack3/Hades", upgrade = "never")
+```
+
+# Install additional packages
+
+There are some additional packages that will also be helpful so let's make sure those are installed as well.
+
+```{r, eval=F}
+install.packages("tidyverse")
+install.packages("renv")
+```
+
+
+
+
+
