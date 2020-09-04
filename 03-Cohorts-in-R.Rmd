@@ -1,0 +1,214 @@
+---
+title: "Cohorts in R"
+output: html_notebook
+---
+
+Cohorts are a fundamental building block of analytics using OHDSI tools. What are some things we can do with cohorts in R?
+
+Recall that the OHDSI definition of a cohort is "A set of persons satisfying one or more inclusion criteria for a duration of time".
+
+A "cohort definition"  is the set of rules that defines a cohort. This set of rules can be represeted in multiple ways
+
+- Human readable text
+- A json file
+- SQL code
+
+Each of these ways of representing a cohort definition are interchagable. However the json representation can be translated into the other two automatically by OHDSI tools so we will consider json as the primary representation of a cohort definiton for our purposes.
+
+Atlas is a very good tool for creating cohort definitions. We can use R to manipulate these definitions after they are created. The basic things we might want to do with a cohort definiton are
+
+- Save them for later use
+- Load them into Atlas programmatically
+- Instantiate/Generate them on a specific database
+ 
+
+# Download a cohort definition created in Atlas
+
+The ROhdsiWebApi package gives us a way to programmatically interact with WebAPI (the Atlas backend). 
+
+
+```{r}
+# devtools::install_github("ablack3/ROhdsiWebApi", ref = "auth2", force = T) # install this version globally prior to tutorial, try to get this merged.
+```
+
+
+
+```{r}
+library(ROhdsiWebApi)
+baseUrl <- "https://ecosystem.ohdsi.training/WebAPI"
+
+# Make sure we can query webapi
+getWebApiVersion(baseUrl)
+
+# Before using some functions we need to authenticate
+authorizeWebApi(baseUrl, 
+                authMethod = "db",
+                webApiUsername = "user1",
+                webApiPassword = Sys.getenv("WEBAPI_PASSWORD"))
+
+```
+
+
+Take a look at the cohorts we created in Atlas.
+
+```{r}
+getCohortDefinitionsMetaData(baseUrl)
+```
+
+
+Download a cohort definition from Atlas.
+
+
+```{r}
+cohort_def8 <- getCohortDefinition(cohortId = 8, baseUrl)
+str(cohort_def8, max.level = 1)
+```
+
+Save and reload a cohort definition.
+
+```{r}
+jsonlite::write_json(cohort_def8, "cohort8.json", pretty = T)
+
+cohort_def8 <- jsonlite::read_json("cohort8.json", simplifyVector = T)
+str(cohort_def8, max.level = 1)
+```
+
+We can also download cohort definitions from OHDSI study packages as well.
+
+```{r}
+# download heart disease cohort definition from legend study
+download.file("https://raw.githubusercontent.com/OHDSI/Legend/master/inst/cohorts/Coronary%20heart%20disease.json", "Coronary heart disease.json")
+
+
+chd_def <- jsonlite::read_json("Coronary heart disease.json")
+str(chd_def, max.level = 1)
+
+```
+
+Note that this looks a little different
+
+This cohort definition contains just the expression.
+
+```{r}
+str(cohort_def8$expression, max.level = 1)
+```
+
+Get the SQL for that cohort
+
+```{r}
+chd_sql <- getCohortSql(chd_def, baseUrl)
+cat(substr(chd_sql, 1, 200))
+```
+
+
+Upload a cohort definition to Atlas
+```{r}
+postCohortDefinition(name = "[Legend] Coronary Heart Disease",
+                     cohortDefinition = chd_def,
+                     baseUrl = baseUrl)
+```
+
+# Generate cohorts programmatically from R
+
+```{r}
+ROhdsiWebApi::getCdmSources(baseUrl)
+```
+
+
+```{r}
+ROhdsiWebApi::invokeCohortGeneration(17, baseUrl, sourceKey = "synthea1k")
+```
+
+
+```{r}
+# generate all cohorts on a dataset. 
+cohortMetaData <- getCohortDefinitionsMetaData(baseUrl)
+purrr::walk(cohortMetaData$id, ~invokeCohortGeneration(cohortId = ., baseUrl = baseUrl, sourceKey = "synthea1k"))
+```
+
+# Cohort Diagnostics
+
+The CohortDiagnostics package provides powerful tools for assessing the quality of a cohort definion. 
+
+
+```{r}
+invokeCohortGeneration(17, baseUrl, sourceKey = "synthea100k")
+invokeCohortGeneration(17, baseUrl, sourceKey = "synthea23m")
+getCohortGenerationInformation(17, baseUrl)
+
+```
+
+
+```{r}
+library(CohortDiagnostics)
+
+connectionDetails <- createConnectionDetails(dbms = "redshift",
+                                             user = "master",
+                                             server = Sys.getenv("DB_SERVER"),
+                                             password = Sys.getenv("DB_PASSWORD"),
+                                             # password = keyring::key_get(), # use the keyring package to store and retreive passwords
+                                             # password = rstudioapi::askForPassword(), # interactively prompt for password
+                                             port = "5439")
+
+```
+
+
+```{r}
+# error with this...
+CohortDiagnostics::launchCohortExplorer(connectionDetails = connectionDetails,
+                                        cdmDatabaseSchema = "mycdm.synthea100k",
+                                        cohortDatabaseSchema = "mycdm.synthea100kresults",
+                                        cohortTable = "cohort",
+                                        cohortId = 17) # coronary heart disease
+```
+
+
+
+```{r}
+
+
+cohortMetadata <- getCohortDefinitionsMetaData(baseUrl)
+
+cohortSetReference <- cohortMetadata %>% 
+  filter(stringr::str_detect(name, "Legend")) %>% 
+  mutate(atlasId = id,
+         atlasName = name,
+         cohortId = id,
+         name = stringr::str_remove_all(name, "Legend|\\W")) %>% 
+  select(atlasId, atlasName, cohortId, name)
+
+CohortDiagnostics::runCohortDiagnostics(baseUrl = baseUrl,
+                                        connectionDetails = connectionDetails,
+                                        cdmDatabaseSchema = "mycdm.synthea100k",
+                                        cohortDatabaseSchema = "mycdm.synthea100kresults",
+                                        cohortTable = "cohort", 
+                                        cohortSetReference = cohortSetReference,
+                                        exportFolder = "~/cohortDiagnosticsExport",
+                                        runInclusionStatistics = F,
+                                        databaseId = "synthea100k")
+```
+
+
+
+inclusion statistics discussion.. How do we use inlcusion statistics.
+
+Cohort Diagnosits in "package" mode (discussed later)
+
+
+
+Cohort Diagnostics also has a number of other useful functions. 
+Suppose we and to create a new cohort table and instantiate some cohorts using json files.
+
+
+```{r}
+# create a new personal schema (this should probably be done ahead of the course for each user)
+
+# create cohort
+
+
+
+
+
+```
+
+
