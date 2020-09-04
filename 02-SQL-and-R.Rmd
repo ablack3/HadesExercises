@@ -1,0 +1,307 @@
+---
+title: "Querying a CDM"
+output: html_notebook
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Many of the OHDSI tools are designed to use a database in the OMOP common data model format. OHDSI Studies and tools will send SQL to the database
+
+```{r}
+
+library(DatabaseConnector)
+connectionDetails <- createConnectionDetails(dbms = "redshift",
+                                             user = "master",
+                                             server = Sys.getenv("DB_SERVER"),
+                                             password = Sys.getenv("DB_PASSWORD"),
+                                             # password = keyring::key_get(), # use the keyring package to store and retreive passwords
+                                             # password = rstudioapi::askForPassword(), # interactively prompt for password
+                                             port = "5439")
+
+conn <- connect(connectionDetails)
+# disconnect(con) # use the disconnect function to disconnect
+
+```
+
+There are a few ways we can query the database from R.
+
+**1) Using dbGetQuery() or similar R functions exported from the DatabaseConnector package**
+
+
+```{r}
+# send one query and get a result set
+dbGetQuery(conn, "select * from synthea1k.concept limit 5")
+
+# send one query and get result set
+querySql(conn, sql = "select * from synthea1k.concept limit 2;")
+
+# send multiple queries separated by semicolons
+# note that executeSql does not return a result. It is used to create/modify tables in the database
+executeSql(conn, "drop table if exists #x; create table #x (k INT); insert into #x values (2);")
+querySql(conn, "select * from #x")
+
+```
+
+
+**2) Using a SQL code chunk in our notebook.**
+Run one sql query and get a result
+
+```{sql connection=conn}
+select * from synthea1k.concept limit 5
+```
+
+Save result set to an R dataframe.
+
+```{sql connection=conn, output.var = df}
+select * from synthea1k.concept limit 5
+```
+
+```{r}
+df
+```
+
+
+Note that if we make an error in our sql query we may need to send the rollback command to clear the transaction. This happens with postgres and redshift.
+
+
+
+
+
+**3) Using dplyr (discussed later)**
+
+
+
+# Get to know your schemas
+
+In addition to knowing how to connect to the database we also want need to have three schemas available
+
+1) cdmDatabaseSchema - the schema where your cdm lives (usually each cdm gets its own schema)
+2) cohortDatabaseSchema - A schema where cohort tables can be created. You must have write access to this schema.
+3) vocabDatabase - The schema where the vocabulary tables live (Usually same as the cdmDatabaseSchema)
+4) resultsDatabaseSchema
+
+We also need the name of the cdm database so each of these schemas is fully specified. 
+
+`databaseName.schemaName.tableName`
+
+
+To find these schemas we can look in a few places. 
+- The rstudio connections pane (upper right)
+- Querying the information_schema.tables table
+
+```{sql, connection = conn}
+select distinct table_schema from information_schema.tables
+```
+
+In our case, for the 100k person synthea dataset we have 
+
+```{r}
+cdmDatabaseSchema <- "mycdm.synthea1k"
+cohortDatabaseSchema <- "mycdm.synthea1kresults"
+vocabDatabaseSchema <- "mycdm.synthea1k"
+resultsDatabaseSchema <- "mycdm.synthea1kresults"
+```
+
+Not all of these will be used for everything we do but we need to know what they are.
+
+
+
+# Explore the CDM using SQL
+
+We can get a long way toward understanding our data using SQL.
+
+Some good places to look for example sql queries are
+
+http://cdmqueries.omop.org/
+https://data.ohdsi.org/QueryLibrary/
+
+
+For example perhaps we want to know "what are the most prevalent concepts in the observation table?"
+
+```{sql, connection = conn}
+select concept_id, concept_name, count(*) as n 
+from synthea1k.observation a
+inner join synthea1k.concept b 
+  on a.observation_concept_id = b.concept_id
+group by concept_id, concept_name
+order by n desc
+limit 5;
+```
+
+# Rolling back a SQL transaction
+
+When using postgres or redshift we might need to rollback a sql transaction if we have an error in our SQL code.
+
+```{r}
+# a query with a typo
+dbGetQuery(conn, "select * from synthea1k.concpt limit 1")
+
+# subsequent queries might give an error like "commands ignored until end of transaction block"
+dbGetQuery(conn, "select * from synthea1k.concept limit 1")
+
+# rollback resets the transaction
+dbExecute(conn, "rollback;")
+
+# the error is gone
+dbGetQuery(conn, "select * from synthea1k.concept limit 1")
+
+```
+
+
+# Example of using an OHDSI tool 
+In addition to running SQL queries we can use standardized analytic tools that query the database for us.
+
+In this example we will run Achilles which is a powerful database characterization tool.
+
+```{r}
+# Make sure that cdm source has at least one row - this fix should be applied before the tutorial.
+executeSql(conn, "insert into synthea1k.cdm_source (cdm_source_name) values ('synthea1k');")
+executeSql(conn, "insert into synthea100k.cdm_source (cdm_source_name) values ('synthea100k');")
+executeSql(conn, "insert into synthea23m.cdm_source (cdm_source_name) values ('synthea23mk');")
+```
+
+
+```{r}
+# check that all the correct tables exist
+Achilles::validateSchema(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = "mycdm.synthea1k", 
+  resultsDatabaseSchema = "mycdm.synthea1kresults",
+  cdmVersion = "5",
+  runCostAnalysis = F,
+  outputFolder = "~/validationOutput")
+```
+
+Here we get an error and a message that an error report was created. Looking at error reports and logs will help with understanding why an error occurred.
+
+
+
+```{r}
+# create scratch schema and achilles schema
+executeSql(conn, "create schema username_scratch; create schema username_synthea1k_results;")
+```
+
+
+```{r, warning=F}
+achillesResults <- Achilles::achilles(connectionDetails, 
+         cdmDatabaseSchema = "mycdm.synthea1k", 
+         resultsDatabaseSchema = "mycdm.username_synthea1k_results",
+         scratchDatabaseSchema = "mycdm.username_scratch",
+         vocabDatabaseSchema = "mycdm.synthea1k",
+         numThreads = 1,
+         sourceName = "Synthea1k", 
+         cdmVersion = "5.3.1",
+         analysisIds = c(0:2, 5), # for demonstartion we will only execute a few analyses
+         runHeel = F,
+         runCostAnalysis = F,
+         conceptHierarchy = F)
+
+```
+
+
+Achilles results can be viewed in Atlas under the data sources section.
+
+
+Another tool that is helpful to run to check that your CDM is ready for prime time is DataQualityDashboard. As a researcher or data scientist you are probably not the person who created the CDM you want to use. How can you gain confidence that the CDM conforms to the correct specification and that the standardized analytics will work correctly?
+
+
+```{r}
+# check that all cdm fields are present
+dqChecks <- DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
+                                                  cdmDatabaseSchema = "mycdm.synthea1k", 
+                                                  resultsDatabaseSchema = "mycdm.synthea1kresults",
+                                                  writeToTable = F,
+                                                  cdmSourceName = "Synthea1k",
+                                                  outputFolder = "~/synthea1kDQChecks", 
+                                                  checkNames = "cdmField")
+
+# which fields are missing?
+library(dplyr)
+dqChecks %>% 
+  filter(FAILED == 1) %>% 
+  select(CDM_TABLE_NAME, CDM_FIELD_NAME)
+
+```
+
+We can also open the log that was created
+```{r, eval=FALSE}
+file.edit("~/synthea1kDQChecks/Synthea1k/log_DqDashboard_Synthea1k.txt")
+```
+
+or view the results in the DQ Dashboard.
+
+```{r, eval=FALSE}
+DataQualityDashboard::viewDqDashboard("~/synthea1kDQChecks/Synthea1k/results_Synthea1k.json")
+```
+
+
+It looks like we are missing a lot from the visit detail table. Let's confirm this.
+```{r}
+df <- dbGetQuery(conn, "select * from synthea1k.VISIT_DETAIL limit 5")
+nrow(df)
+colnames(df)
+```
+
+It does appear that the missing columns are indeed present. perhaps the problem is that we have zero rows.
+
+```{r}
+df <- dbGetQuery(conn, "select * from synthea1k.COST limit 5")
+nrow(df)
+colnames(df)
+```
+
+In the case of the cost table it looks like we have a typo in the name "reveue_code_source_value". These types of checks can help avoid errors later on when using OHDSI tools.
+
+
+Read about dataQualityDashboard options at https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html
+
+
+
+# Using dplyr for queries
+
+dplyr is a popular data manipulation tool in R. We can also use dplyr to query the cdm but we will need to connect using the DBI::dbConnect function.
+
+```{r}
+library(dplyr)
+library(RPostgreSQL)
+
+con <- DBI::dbConnect(drv = dbDriver("PostgreSQL"),
+                      host = Sys.getenv("DB_HOST"),
+                      dbname = "mycdm",
+                      user = "master",
+                      password = Sys.getenv("DB_PASSWORD"),
+                      port = "5439")
+
+
+
+condition <- tbl(con, dbplyr::in_schema("synthea1k", "condition_occurrence"))
+concept <- tbl(con, dbplyr::in_schema("synthea1k", "concept"))
+
+# What are the most frequently occuring condition concepts?
+condition %>% 
+  inner_join(concept, by = c("condition_concept_id" = "concept_id")) %>% 
+  count(condition_concept_id, concept_name, sort = T)
+
+```
+
+
+# Parameterized SQL & SQL translation
+to be added.
+```{r}
+
+```
+
+
+Remember to disconnect from the database when you are done using it.
+
+```{r}
+DatabaseConnector::disconnect(conn)
+DBI::dbDisconnect(con)
+```
+
+
+

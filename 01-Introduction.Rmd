@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-output: html_document
+output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
@@ -71,7 +71,7 @@ system("ls -la ~/.Renviron") # restricted permissions
 
 Hades consists of a large number of packages. Instead of installing them all separately we can install them all at once by installing the Hades pacakge. This can take a while to run.
 ```{r, eval=F}
-devtools::install_github("ablack3/Hades", upgrade = "never")
+devtools::install_github("OHDSI/Hades", upgrade = "never")
 ```
 
 # Install additional packages
@@ -81,7 +81,21 @@ There are some additional packages that will also be helpful so let's make sure 
 ```{r, eval=F}
 install.packages("tidyverse")
 install.packages("renv")
+devtools::install_github("OHDSI/DataQualityDashboard", ref = "v1.2")
 ```
+
+
+# Set global options in RStudio
+The following changes to RStudio make life easier. The purpose of these changes is to give us a clean R working environment every time R restarts. It is preferred to always start fresh and consider objects in the global enviornment as transient. Code and explicitly saved files and objects are the things that persist from session to session.
+
+In RStudio open tools -> Global Options
+Make sure the "restore workspace to .Rdata at startup" is not checked 
+Set "Save workspace to .Rdata on exit" to Never
+
+![](images/rstudio_options.png)
+
+
+
 
 
 
