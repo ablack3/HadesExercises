@@ -190,7 +190,7 @@ CohortDiagnostics::runCohortDiagnostics(baseUrl = baseUrl,
 
 
 
-inclusion statistics discussion.. How do we use inlcusion statistics.
+inclusion statistics discussion.. How do we use inlcusion statistics?
 
 Cohort Diagnosits in "package" mode (discussed later)
 
@@ -202,13 +202,62 @@ Suppose we and to create a new cohort table and instantiate some cohorts using j
 
 ```{r}
 # create a new personal schema (this should probably be done ahead of the course for each user)
+dbExecute(conn, "create schema user1_work;")
 
-# create cohort
+# create a new cohort table
+CohortDiagnostics::createCohortTable(connectionDetails, 
+                                     cohortDatabaseSchema = "mycdm.user1_work",
+                                     cohortTable = "cohort",
+                                     createInclusionStatsTables = T)
 
+# load cohort json
+cohort_def <- jsonlite::read_json("Coronary heart disease.json")
 
+# get parameterized SQL that will build the cohort
+sql <- ROhdsiWebApi::getCohortSql(cohort_def, baseUrl)
 
+# What parameters are in this sql file that need to be assigned
+unique(stringr::str_extract_all(sql, "@\\w+")[[1]])
 
 
 ```
+
+
+```{r}
+
+sql %>% 
+  SqlRender::render(vocabulary_database_schema = "mycdm.synthea1k",
+                    cdm_database_schema = "mycdm.synthea1k",
+                    target_database_schema = "mycdm.user1_work",
+                    target_cohort_table = "cohort",
+                    target_cohort_id = 100,
+                    results_database_schema = "mycdm.user1_work") %>% 
+  SqlRender::translate("redshift") %>% 
+  executeSql(conn, .)
+
+```
+
+
+
+```{sql connection=conn}
+select count(*) as n_records, count(distinct subject_id) as n_persons from mycdm.user1_work.cohort
+```
+
+
+# Feature extraction
+
+Feature extraction is a tool used by many other OHDSI pacakages and is a powerful way to create a large number of features/covariates for a cohort.
+
+Suppose we simply want to use Feature Extraction to create a table 1 for our cohort.
+
+```{r}
+
+```
+
+
+
+
+
+
 
 
