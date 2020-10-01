@@ -7,20 +7,39 @@ Cohorts are a fundamental building block of analytics using OHDSI tools. What ar
 
 Recall that the OHDSI definition of a cohort is "A set of persons satisfying one or more inclusion criteria for a duration of time".
 
-A "cohort definition"  is the set of rules that defines a cohort. This set of rules can be represeted in multiple ways
+A "cohort definition"  is the set of rules that defines a cohort. This set of rules can be represented in multiple ways:
 
 - Human readable text
 - A json file
 - SQL code
 
-Each of these ways of representing a cohort definition are interchagable. However the json representation can be translated into the other two automatically by OHDSI tools so we will consider json as the primary representation of a cohort definiton for our purposes.
+Each of these ways of representing a cohort definition are interchagable. However the json representation can be translated into the other two automatically by OHDSI tools so we will consider json as the primary representation of a cohort definition.
 
-Atlas is a very good tool for creating cohort definitions. We can use R to manipulate these definitions after they are created. The basic things we might want to do with a cohort definiton are
+Atlas is a fantastic tool for creating cohort definitions. We can use R to manipulate these definitions after they are created. The basic things we might want to do with a cohort definiton are
 
 - Save them for later use
 - Load them into Atlas programmatically
 - Instantiate/Generate them on a specific database
- 
+
+We can think of every cohort as progressing through three phases.
+
+```{r}
+DiagrammeR::grViz("digraph {
+
+graph [layout = dot, rankdir = LR]
+
+node [shape = rectangle, style = filled, fillcolor = Linen]
+
+json [label =  'JSON: \n cohort \n definition']
+sql [label = 'SQL: \n needed to \n generate cohort']
+cohortTable [label= 'Cohort Table: \n the cohort subject IDs, \n entry, and exit dates']
+
+json -> sql -> cohortTable
+}")
+```
+
+The OHDSI tools help us move from one phase to the next.
+
 
 # Download a cohort definition created in Atlas
 
@@ -29,6 +48,7 @@ The ROhdsiWebApi package gives us a way to programmatically interact with WebAPI
 
 ```{r}
 # devtools::install_github("ablack3/ROhdsiWebApi", ref = "auth2", force = T) # install this version globally prior to tutorial, try to get this merged.
+# unfortunately I don't think this will be merged in time!
 ```
 
 
@@ -244,15 +264,6 @@ select count(*) as n_records, count(distinct subject_id) as n_persons from mycdm
 ```
 
 
-# Feature extraction
-
-Feature extraction is a tool used by many other OHDSI pacakages and is a powerful way to create a large number of features/covariates for a cohort.
-
-Suppose we simply want to use Feature Extraction to create a table 1 for our cohort.
-
-```{r}
-
-```
 
 
 
