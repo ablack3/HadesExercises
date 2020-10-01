@@ -1,6 +1,6 @@
 ---
 title: "Cohorts in R"
-output: html_notebook
+output: html_document
 ---
 
 Cohorts are a fundamental building block of analytics using OHDSI tools. What are some things we can do with cohorts in R?
@@ -17,13 +17,14 @@ Each of these ways of representing a cohort definition are interchagable. Howeve
 
 Atlas is a fantastic tool for creating cohort definitions. We can use R to manipulate these definitions after they are created. The basic things we might want to do with a cohort definiton are
 
-- Save them for later use
+- Save them for later use or to share with others
 - Load them into Atlas programmatically
 - Instantiate/Generate them on a specific database
 
+
 We can think of every cohort as progressing through three phases.
 
-```{r}
+```{r, echo=F}
 DiagrammeR::grViz("digraph {
 
 graph [layout = dot, rankdir = LR]
@@ -49,6 +50,7 @@ The ROhdsiWebApi package gives us a way to programmatically interact with WebAPI
 ```{r}
 # devtools::install_github("ablack3/ROhdsiWebApi", ref = "auth2", force = T) # install this version globally prior to tutorial, try to get this merged.
 # unfortunately I don't think this will be merged in time!
+Sys.setenv(TZ="Etc/Universal") # add this to global R startup script or renviron
 ```
 
 
@@ -72,7 +74,8 @@ authorizeWebApi(baseUrl,
 Take a look at the cohorts we created in Atlas.
 
 ```{r}
-getCohortDefinitionsMetaData(baseUrl)
+cohorts <- getCohortDefinitionsMetaData(baseUrl)
+cohorts
 ```
 
 
@@ -80,17 +83,18 @@ Download a cohort definition from Atlas.
 
 
 ```{r}
-cohort_def8 <- getCohortDefinition(cohortId = 8, baseUrl)
-str(cohort_def8, max.level = 1)
+cohort_def <- getCohortDefinition(cohortId = 50, baseUrl)
+str(cohort_def, max.level = 1)
 ```
 
 Save and reload a cohort definition.
 
 ```{r}
-jsonlite::write_json(cohort_def8, "cohort8.json", pretty = T)
+jsonlite::write_json(cohort_def, "cohort.json", pretty = T)
+# take a look at the cohort.json file
 
-cohort_def8 <- jsonlite::read_json("cohort8.json", simplifyVector = T)
-str(cohort_def8, max.level = 1)
+cohort_def <- jsonlite::read_json("cohort.json", simplifyVector = T)
+str(cohort_def, max.level = 1)
 ```
 
 We can also download cohort definitions from OHDSI study packages as well.
@@ -105,15 +109,15 @@ str(chd_def, max.level = 1)
 
 ```
 
-Note that this looks a little different
-
-This cohort definition contains just the expression.
+Note that this looks a little different. This cohort definition contains just the expression and no information about who created it or when it was created.
 
 ```{r}
-str(cohort_def8$expression, max.level = 1)
+str(cohort_def$expression, max.level = 1)
 ```
 
-Get the SQL for that cohort
+# Get the SQL for that cohort
+
+Now let's take the json and get the SQL code that will *generate* the list of patient ids, cohort entry, and cohort exit dates.
 
 ```{r}
 chd_sql <- getCohortSql(chd_def, baseUrl)
@@ -121,70 +125,118 @@ cat(substr(chd_sql, 1, 200))
 ```
 
 
-Upload a cohort definition to Atlas
-```{r}
+# Upload a cohort definition to Atlas
+We can also programatically upload cohort cohort definitions to Atlas which you might want to do after setting up Atlas for the first time. Instead of creating all your cohorts from scratch you can simply batch import large numbers of pre-defined and tested cohorts from OHDSI studies like LEGEND.
+
+```{r, eval=F}
 postCohortDefinition(name = "[Legend] Coronary Heart Disease",
                      cohortDefinition = chd_def,
                      baseUrl = baseUrl)
 ```
 
+Uploading multiple cohorts is very similar to uploading one cohort. In this example we will upload all of the LEGEND cohorts to Atlas in a few lines of code.
+```{r, eval=F}
+
+# purrr::walk is similar to apply but is call only for it's action (side effect) and does not return a value
+# here we just upload a 3 cohorts but you can try uploading them all by removing [1:3]
+purrr::walk(list.files("LEGEND_cohorts")[1:3], function(filename) {
+  name <- paste("[LEGEND]", stringr::str_remove(filename, ".json"))
+  cohortDefinition <- jsonlite::read_json(paste0("LEGEND_cohorts/", filename))
+  postCohortDefinition(name, cohortDefinition, baseUrl)
+})
+
+# Note that cohort names must be unique so you might want to include your username in the cohort name to avoid name clashes.
+
+# If you see Cohort: already exists error then you will need to choose a different name prefix (change [LEGEND] to [Your initials or username])
+
+```
+
+
+
 # Generate cohorts programmatically from R
+
+After we have uploaded those cohorts we may want to **generate** them on one or more datasets programatically. If we have a large number of cohorts this could save a lot of time.
+
+First lets get the source keys for each CDM database.
 
 ```{r}
 ROhdsiWebApi::getCdmSources(baseUrl)
 ```
 
+Generating a single cohort on a single CDM is just one command. First let's find a cohort to generate.
 
 ```{r}
-ROhdsiWebApi::invokeCohortGeneration(17, baseUrl, sourceKey = "synthea1k")
+library(dplyr)
+
+cohorts <- getCohortDefinitionsMetaData(baseUrl)
+
+cohorts %>% 
+  filter(stringr::str_detect(name, "LEGEND")) %>% 
+  select(id, name)
 ```
 
 
-```{r}
-# generate all cohorts on a dataset. 
-cohortMetaData <- getCohortDefinitionsMetaData(baseUrl)
+```{r, eval=F}
+ROhdsiWebApi::invokeCohortGeneration(114, baseUrl, sourceKey = "synthea1k")
+```
+
+
+```{r, eval=F}
+# generate multiple cohorts on a CDM 
+cohortMetaData <- getCohortDefinitionsMetaData(baseUrl) %>% 
+  filter(stringr::str_detect(name, "LEGEND")) %>% 
+  select(id, name)
+
 purrr::walk(cohortMetaData$id, ~invokeCohortGeneration(cohortId = ., baseUrl = baseUrl, sourceKey = "synthea1k"))
 ```
 
-# Cohort Diagnostics
 
-The CohortDiagnostics package provides powerful tools for assessing the quality of a cohort definion. 
+```{r, eval=F}
 
+# generate multiple cohorts on a multiple CDMs 
 
-```{r}
-invokeCohortGeneration(17, baseUrl, sourceKey = "synthea100k")
-invokeCohortGeneration(17, baseUrl, sourceKey = "synthea23m")
-getCohortGenerationInformation(17, baseUrl)
+source_key <- c("synthea1k", "synthea100k", "synthea23m")
+
+cohortMetaData <- getCohortDefinitionsMetaData(baseUrl) %>% 
+  filter(stringr::str_detect(name, "LEGEND")) %>% 
+  select(id, name) %>% 
+  slice(1:3) %>% 
+  tidyr::expand_grid(source_key)
+
+# call the invokeCohortGeneration function for each combination of cohortId and sourceKey
+purrr::walk2(cohortMetaData$id, cohortMetaData$source_key, 
+             ~invokeCohortGeneration(cohortId = .x, baseUrl = baseUrl, sourceKey = .y))
 
 ```
 
 
+With CirceR we can also generate human readable cohort descriptions from json files.
+
 ```{r}
+cohortJson <- paste(readLines("LEGEND_cohorts/Abdominal pain.json"),collapse="\n")
+cohortMarkdown <- CirceR::cohortPrintFriendly(cohortJson)
+
+cat(cohortMarkdown)
+```
+
+
+# Cohort Diagnostics
+
+The [CohortDiagnostics](https://github.com/OHDSI/CohortDiagnostics) package provides powerful tools for assessing the quality of a cohort definion and "fitness for use" of a particular dataset for a particular study. 
+
+
+
+```{r, eval=F}
 library(CohortDiagnostics)
 
 connectionDetails <- createConnectionDetails(dbms = "redshift",
                                              user = "master",
                                              server = Sys.getenv("DB_SERVER"),
                                              password = Sys.getenv("DB_PASSWORD"),
-                                             # password = keyring::key_get(), # use the keyring package to store and retreive passwords
-                                             # password = rstudioapi::askForPassword(), # interactively prompt for password
+                                             # password = keyring::key_get(),
+                                             # password = rstudioapi::askForPassword(),
                                              port = "5439")
 
-```
-
-
-```{r}
-# error with this...
-CohortDiagnostics::launchCohortExplorer(connectionDetails = connectionDetails,
-                                        cdmDatabaseSchema = "mycdm.synthea100k",
-                                        cohortDatabaseSchema = "mycdm.synthea100kresults",
-                                        cohortTable = "cohort",
-                                        cohortId = 17) # coronary heart disease
-```
-
-
-
-```{r}
 
 
 cohortMetadata <- getCohortDefinitionsMetaData(baseUrl)
@@ -209,66 +261,9 @@ CohortDiagnostics::runCohortDiagnostics(baseUrl = baseUrl,
 ```
 
 
+Cohort Diagnosics can also run in "package" mode. This is helpful when you want to run an OHDSI study. We will be discussing OHDSI studies in the next section.
 
-inclusion statistics discussion.. How do we use inlcusion statistics?
-
-Cohort Diagnosits in "package" mode (discussed later)
-
-
-
-Cohort Diagnostics also has a number of other useful functions. 
-Suppose we and to create a new cohort table and instantiate some cohorts using json files.
-
-
-```{r}
-# create a new personal schema (this should probably be done ahead of the course for each user)
-dbExecute(conn, "create schema user1_work;")
-
-# create a new cohort table
-CohortDiagnostics::createCohortTable(connectionDetails, 
-                                     cohortDatabaseSchema = "mycdm.user1_work",
-                                     cohortTable = "cohort",
-                                     createInclusionStatsTables = T)
-
-# load cohort json
-cohort_def <- jsonlite::read_json("Coronary heart disease.json")
-
-# get parameterized SQL that will build the cohort
-sql <- ROhdsiWebApi::getCohortSql(cohort_def, baseUrl)
-
-# What parameters are in this sql file that need to be assigned
-unique(stringr::str_extract_all(sql, "@\\w+")[[1]])
-
-
-```
-
-
-```{r}
-
-sql %>% 
-  SqlRender::render(vocabulary_database_schema = "mycdm.synthea1k",
-                    cdm_database_schema = "mycdm.synthea1k",
-                    target_database_schema = "mycdm.user1_work",
-                    target_cohort_table = "cohort",
-                    target_cohort_id = 100,
-                    results_database_schema = "mycdm.user1_work") %>% 
-  SqlRender::translate("redshift") %>% 
-  executeSql(conn, .)
-
-```
-
-
-
-```{sql connection=conn}
-select count(*) as n_records, count(distinct subject_id) as n_persons from mycdm.user1_work.cohort
-```
-
-
-
-
-
-
-
-
+# Exercise
+Create a new cohort in Atlas. Then run Cohort Diagnostics on that cohort using R. 
 
 
