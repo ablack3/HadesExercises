@@ -1,31 +1,42 @@
 ---
 title: "Querying a CDM"
-output: html_notebook
+output: html_document
 ---
 
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
 
+Many of the OHDSI tools are designed to use a database in the OMOP common data model format. OHDSI Studies and tools will send SQL to the database.
 
-Many of the OHDSI tools are designed to use a database in the OMOP common data model format. OHDSI Studies and tools will send SQL to the database
+
 
 ```{r}
-
 library(DatabaseConnector)
 connectionDetails <- createConnectionDetails(dbms = "redshift",
                                              user = "master",
                                              server = Sys.getenv("DB_SERVER"),
                                              password = Sys.getenv("DB_PASSWORD"),
-                                             # password = keyring::key_get(), # use the keyring package to store and retreive passwords
-                                             # password = rstudioapi::askForPassword(), # interactively prompt for password
+                                             # password = keyring::key_get(), 
+                                             # password = rstudioapi::askForPassword(),
                                              port = "5439")
 
 conn <- connect(connectionDetails)
 # disconnect(con) # use the disconnect function to disconnect
 
 ```
+
+---
+**A note about passwords**
+
+Note that there are three commonly used options for passing database passwords to `DatabaseConnector`.
+
+1. Save your password in your `.Renviron` file and then access it as an environment variable in your scripts.
+2. Use the keyring package. Use `key_set()` to securely store your password and `key_get()` to retrieve it.
+3. Interactively prompt for your password using `rstudioapi::askForPassword()` or `getPass::getPass()`
+
+You should avoid typing your password into your analysis code files as plain text.
+---
 
 There are a few ways we can query the database from R.
 
@@ -56,7 +67,7 @@ select * from synthea1k.concept limit 5
 
 Save result set to an R dataframe.
 
-```{sql connection=conn, output.var = df}
+```{sql connection=conn, output.var = "df"}
 select * from synthea1k.concept limit 5
 ```
 
@@ -136,7 +147,7 @@ limit 5;
 
 When using postgres or redshift we might need to rollback a sql transaction if we have an error in our SQL code.
 
-```{r}
+```{r, error=TRUE}
 # a query with a typo
 dbGetQuery(conn, "select * from synthea1k.concpt limit 1")
 
@@ -157,7 +168,7 @@ In addition to running SQL queries we can use standardized analytic tools that q
 
 In this example we will run Achilles which is a powerful database characterization tool.
 
-```{r}
+```{r, eval=F}
 # Make sure that cdm source has at least one row - this fix should be applied before the tutorial.
 executeSql(conn, "insert into synthea1k.cdm_source (cdm_source_name) values ('synthea1k');")
 executeSql(conn, "insert into synthea100k.cdm_source (cdm_source_name) values ('synthea100k');")
@@ -165,13 +176,14 @@ executeSql(conn, "insert into synthea23m.cdm_source (cdm_source_name) values ('s
 ```
 
 
-```{r}
+```{r, eval=F}
+# What is the reason for this error?***********************
 # check that all the correct tables exist
 Achilles::validateSchema(
   connectionDetails = connectionDetails,
   cdmDatabaseSchema = "mycdm.synthea1k", 
   resultsDatabaseSchema = "mycdm.synthea1kresults",
-  cdmVersion = "5",
+  cdmVersion = "5.3",
   runCostAnalysis = F,
   outputFolder = "~/validationOutput")
 ```
@@ -180,7 +192,7 @@ Here we get an error and a message that an error report was created. Looking at 
 
 
 
-```{r}
+```{r, eval=F}
 # create scratch schema and achilles schema
 executeSql(conn, "create schema username_scratch; create schema username_synthea1k_results;")
 ```
@@ -194,11 +206,11 @@ achillesResults <- Achilles::achilles(connectionDetails,
          vocabDatabaseSchema = "mycdm.synthea1k",
          numThreads = 1,
          sourceName = "Synthea1k", 
-         cdmVersion = "5.3.1",
+         cdmVersion = "5.3",
          analysisIds = c(0:2, 5), # for demonstartion we will only execute a few analyses
          runHeel = F,
-         runCostAnalysis = F,
-         conceptHierarchy = F)
+         # conceptHierarchy = F,
+         runCostAnalysis = F)
 
 ```
 
@@ -268,9 +280,10 @@ dplyr is a popular data manipulation tool in R. We can also use dplyr to query t
 ```{r}
 library(dplyr)
 library(RPostgreSQL)
+host <- stringr::str_remove(Sys.getenv("DB_SERVER"), "/mycdm")
 
 con <- DBI::dbConnect(drv = dbDriver("PostgreSQL"),
-                      host = Sys.getenv("DB_HOST"),
+                      host = host,
                       dbname = "mycdm",
                       user = "master",
                       password = Sys.getenv("DB_PASSWORD"),
@@ -290,18 +303,258 @@ condition %>%
 
 
 # Parameterized SQL & SQL translation
-to be added.
+
+In OHDSI we frequently want to run SQL on multiple databases with only slight modifications. Rather than copying the SQL code we can use parameters to abstract away the differences. The SqlRender package provides the functionality to write parameterized SQL as well as translate SQL from the OHDSI SQL dialect (a subset of SQL Server's T-SQL) to a variety of other database dialects automatically. (Postgres, Big Query, Impala, Oracle, ect.)
+
+
+
 ```{r}
+library(SqlRender)
+
+# We can paramaterize SQL
+sql <- "SELECT * FROM @x WHERE person_id = @a;"
+render(sql, x = "observation", a = 123)
+
+# And translate it to different database dialects
+sql <- "SELECT TOP 10 * FROM person;"
+translate(sql, targetDialect = "postgresql")
 
 ```
 
+Suppose we want to execute a query created by someone in the OHDSI community on our database. We can use SqlRender to accomplish this. Let's finish up this section by executing a modified version of the query in The Book of OHDSI https://ohdsi.github.io/TheBookOfOhdsi/SqlAndR.html#implementing-the-study-using-sql-and-r
 
-Remember to disconnect from the database when you are done using it.
+Instead of a drug exposure-condition outcome rate let's look at the incidence of amputation among patients with type 2 diabetes.
+
+```{r}
+# create the parameters we will use for sql queries
+cohortDatabaseSchema <- "mycdm.work_user1"
+cohortTable <- "cohort"
+cdmDatabaseSchema <- "mycdm.synthea23m"
+```
+
+
+```{r}
+# create an empty cohort table
+renderTranslateExecuteSql(conn, 
+                          "DROP TABLE IF EXISTS @cohort_db_schema.@cohort_table;",
+                          cohort_db_schema = cohortDatabaseSchema,
+                          cohort_table = cohortTable)
+
+sql <- "
+CREATE TABLE @cohort_db_schema.@cohort_table (
+  cohort_definition_id INT,
+  cohort_start_date DATE,
+  cohort_end_date DATE,
+  subject_id BIGINT
+);
+"
+renderTranslateExecuteSql(conn, sql,
+                          cohort_db_schema = cohortDatabaseSchema,
+                          cohort_table = cohortTable)
+```
+
+The CohortDiagnostics package contains a convenience function for doing this as well.
+```{r, eval=F}
+
+# This function will overwrite an existing cohort table of the same name!
+CohortDiagnostics::createCohortTable(connection = conn,
+                                     cohortDatabaseSchema = cohortDatabaseSchema,
+                                     cohortTable = cohortTable)
+```
+
+**Create exposure cohort**
+Cohort entry will be first occurrence of type 2 diabetes mellitus and cohort exit will be the end of continuous observation.
+
+```{r}
+
+sql <- "
+INSERT INTO @cohort_db_schema.@cohort_table (
+  cohort_definition_id,
+  cohort_start_date,
+  cohort_end_date,
+  subject_id
+)
+SELECT 
+  1 AS cohort_definition_id,
+  cohort_start_date,
+  observation_period_end_date as cohort_end_date,
+  subject_id
+FROM (
+  SELECT 
+    condition_start_date AS cohort_start_date,
+    person_id AS subject_id
+  FROM (
+    SELECT 
+      condition_start_date,
+      condition_end_date,
+      person_id,
+      ROW_NUMBER() OVER (
+        PARTITION BY person_id
+            ORDER BY condition_start_date
+      ) order_nr
+    FROM @cdm_db_schema.condition_occurrence
+    WHERE condition_concept_id =	201826 -- Type 2 Diabetes Mellitus
+  ) ordered_exposures
+  WHERE order_nr = 1
+) first_occurrence
+INNER JOIN @cdm_db_schema.observation_period
+  ON subject_id = person_id
+    AND observation_period_start_date < cohort_start_date
+    AND observation_period_end_date > cohort_start_date
+"
+
+
+
+
+renderTranslateExecuteSql(conn, sql,
+                          cohort_db_schema = cohortDatabaseSchema,
+                          cohort_table = cohortTable,
+                          cdm_db_schema = cdmDatabaseSchema)
+
+```
+
+**Create outcome cohort**
+Cohort entry will be on the day of a leg or foot amputation. Cohort exit will be the same day as the procedure.
+
+```{r}
+sql <- "
+INSERT INTO @cohort_db_schema.@cohort_table (
+ cohort_definition_id,
+ cohort_start_date,
+ cohort_end_date,
+subject_id
+)
+SELECT 
+  2 AS cohort_definition_id,
+  cohort_start_date,
+  cohort_end_date,
+  subject_id
+FROM (
+  SELECT DISTINCT 
+    person_id AS subject_id,
+    procedure_date AS cohort_start_date,
+    procedure_date AS cohort_end_date
+  FROM @cdm_db_schema.procedure_occurrence
+  WHERE procedure_concept_id IN(4195136, 4108565) -- Amputation of foot or above knee
+) distinct_occurrence
+"
+
+renderTranslateExecuteSql(conn, sql,
+                          cohort_db_schema = cohortDatabaseSchema,
+                          cohort_table = cohortTable,
+                          cdm_db_schema = cdmDatabaseSchema)
+
+
+```
+
+```{sql connection=conn}
+ SELECT DISTINCT 
+    person_id AS subject_id,
+    procedure_date AS cohort_start_date,
+    procedure_date AS cohort_end_date
+  FROM mycdm.synthea100k.procedure_occurrence
+  WHERE procedure_concept_id = 4195136 or procedure_concept_id =  4108565
+```
+
+```{r}
+# check to see how many patients are in the cohort
+# glue is a nice package for building queries too. Anything inside {braces} is evaluated as R code.
+dbGetQuery(conn, glue::glue("
+select 
+  cohort_definition_id, 
+  count(*) as count 
+from {cohortDatabaseSchema}.{cohortTable}
+group by cohort_definition_id"))
+```
+
+**Calculate the incidence rate**
+
+```{r}
+sql <- "
+WITH tar AS (
+  SELECT concept_name AS gender,
+    FLOOR((YEAR(cohort_start_date) -
+          year_of_birth) / 10)*10 AS age,
+    subject_id,
+    cohort_start_date,
+    CASE WHEN DATEADD(DAY, 3650, cohort_start_date) >
+      observation_period_end_date
+    THEN observation_period_end_date
+    ELSE DATEADD(DAY, 3650, cohort_start_date)
+    END AS cohort_end_date
+  FROM @cohort_db_schema.@cohort_table
+  INNER JOIN @cdm_db_schema.observation_period
+    ON subject_id = observation_period.person_id
+      AND observation_period_start_date < cohort_start_date
+      AND observation_period_end_date > cohort_start_date
+  INNER JOIN @cdm_db_schema.person
+    ON subject_id = person.person_id
+  INNER JOIN @cdm_db_schema.concept
+    ON gender_concept_id = concept_id
+  WHERE cohort_definition_id = 1 -- Exposure
+)
+SELECT days.gender,
+    days.age,
+    days,
+    CASE WHEN events IS NULL THEN 0 ELSE events END AS events
+FROM (
+  SELECT gender,
+    age,
+    SUM(DATEDIFF(DAY, cohort_start_date,
+      cohort_end_date)) AS days
+  FROM tar
+  GROUP BY gender,
+    age
+) days
+LEFT JOIN (
+  SELECT gender,
+      age,
+      COUNT(*) AS events
+  FROM tar
+  INNER JOIN @cohort_db_schema.@cohort_table amputation
+    ON tar.subject_id = amputation.subject_id
+      AND tar.cohort_start_date <= amputation.cohort_start_date
+      AND tar.cohort_end_date >= amputation.cohort_start_date
+  WHERE cohort_definition_id = 2 -- Outcome
+  GROUP BY gender,
+    age
+) events
+ON days.gender = events.gender
+  AND days.age = events.age;
+"
+
+results <- renderTranslateQuerySql(conn, sql,
+                                   cohort_db_schema = cohortDatabaseSchema,
+                                   cohort_table = cohortTable,
+                                   cdm_db_schema = cdmDatabaseSchema,
+                                   snakeCaseToCamelCase = TRUE)
+```
+
+
+```{r}
+# Compute incidence rate (IR) :
+results$ir <- 1000 * results$events / results$days / 365
+
+library(ggplot2)
+ggplot(results, aes(x = age, y = ir, group = gender, color = gender)) +
+  geom_line() +
+  xlab("Age") +
+  ylab("Incidence (per 1,000 patient years)") +
+  ggtitle("Incidence of leg amputation in type 2 diabetes patients")
+```
+
+
+Notice how we used almost the same SQL code from the [The Book of OHDSI](https://ohdsi.github.io/TheBookOfOhdsi/SqlAndR.html#implementing-the-study-using-sql-and-r) but made some slight modifications by changing the concept IDs? This is ability to write generic SQL code that will run a type of analysis against any database in the OMOP CDM format is a foundational principle that many OHDSI tools are built on.
+
+# Exercise
+
+Head over to the [OHDSI Query Library](https://data.ohdsi.org/QueryLibrary/). Find a query that looks interesting and try to run it on the Synthea data. Use the data characterization reports in Atlas to identify what conditions/drugs/procedures are captured in your CDM. Share your query and results on in the Teams chat.
+
+
+Always remember to disconnect from the database when you are done using it.
 
 ```{r}
 DatabaseConnector::disconnect(conn)
 DBI::dbDisconnect(con)
 ```
-
-
 
