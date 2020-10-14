@@ -9,6 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Setting up your R environment
 
+Typically people use R along with a development envrionment like RStudio, RStudio Server, or Jupyter. RStudio Server is set up by your IT department, accessed through a web browser and runs only on Linux. RStudio desktop can be downloaded and installed for free on any desktop computer. Jupyter can be installed on a remote server or hosted locally, sometimes in a Docker container.
+
 Before we can use the analytic tools provided by Hades we need to set up our analytic envrionment and make sure everything is installed and working. Since Java is a fundamental dependency to many of the Hades packages we will install Java and the R wrapper, rJava, first.
 
 Installing Java will depend on your system and is done outside of R. You want to install the Oracle JDK (64 bit version if on Windows).
@@ -17,6 +19,7 @@ To verify that Java has been installed on your system run
 ```{r}
 system("java -version")
 ```
+
 
 If you get a version number instead of an error then you should be good to go. Next we will install the rJava package which lets us access compiled Java code from R.
 
@@ -36,7 +39,7 @@ If you see a path instead of an error then rJava is working.
 Since many of the OHDSI packages are released on github.com you will need to download the packages from github. While it is possible to download a few packages without an account you will want to create an account and a personal access token if you are going to be installing many OHDSI packages.
 
 - Go to https://github.com/ to sign up for an account
-- Create a personal access token by followling the instructions at https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
+- Create a personal access token by following the instructions at https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
 
 Once you have your personal access token we need to save it along with other sensitive information in our .Renviron file so that we can access these values using environment variables throughout the course.
 
@@ -58,7 +61,7 @@ DB_SERVER=https://mydatabaseserver
 Save and close the file. This is the one and only place where we will store our passwords in plain text. 
 
 We can protect this file by running
-```{r}
+```{r, eval=F}
 system("ls -la ~/.Renviron") # default permissions
 system("chmod 600 ~/.Renviron")
 system("ls -la ~/.Renviron") # restricted permissions
@@ -71,6 +74,7 @@ system("ls -la ~/.Renviron") # restricted permissions
 Hades consists of a large number of packages. Instead of installing them all separately we can install them all at once by installing the Hades pacakage. This can take a while to run. Foruntately all of the packages have been pre-installed on this server but feel free to run the code below to see the process.
 
 ```{r, eval=F}
+remotes::update_packages()
 devtools::install_github("OHDSI/Hades", upgrade = "never")
 ```
 
@@ -88,7 +92,7 @@ devtools::install_github("OHDSI/CohortDiagnostics", ref = "v1.2.2", upgrade = "n
 There are some additional packages that will also be helpful so let's make sure those are installed as well.
 
 ```{r, eval=F}
-install.packages("tidyverse")
+install.packages("tidyverse", lib = .libPaths()[1])
 install.packages("renv")
 install.packages("RPostgreSQL")
 devtools::install_github("OHDSI/DataQualityDashboard", ref = "v1.2")

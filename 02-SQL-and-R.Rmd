@@ -90,10 +90,11 @@ Note that if we make an error in our sql query we may need to send the rollback 
 
 In addition to knowing how to connect to the database we also want need to have three schemas available
 
+**permissions**
 1) cdmDatabaseSchema - the schema where your cdm lives (usually each cdm gets its own schema)
 2) cohortDatabaseSchema - A schema where cohort tables can be created. You must have write access to this schema.
-3) vocabDatabase - The schema where the vocabulary tables live (Usually same as the cdmDatabaseSchema)
-4) resultsDatabaseSchema
+3) vocabDatabaseSchema - The schema where the vocabulary tables live (Usually same as the cdmDatabaseSchema)
+4) resultsDatabaseSchema - Where Atlas and webapi store cohorts and pre-computed analyses (Achilles results).
 
 We also need the name of the cdm database so each of these schemas is fully specified. 
 
@@ -108,7 +109,7 @@ To find these schemas we can look in a few places.
 select distinct table_schema from information_schema.tables
 ```
 
-In our case, for the 100k person synthea dataset we have 
+In our case, for the 1k person synthea dataset we have 
 
 ```{r}
 cdmDatabaseSchema <- "mycdm.synthea1k"
@@ -170,25 +171,15 @@ In this example we will run Achilles which is a powerful database characterizati
 
 ```{r, eval=F}
 # Make sure that cdm source has at least one row - this fix should be applied before the tutorial.
+# causes error in dqd
 executeSql(conn, "insert into synthea1k.cdm_source (cdm_source_name) values ('synthea1k');")
 executeSql(conn, "insert into synthea100k.cdm_source (cdm_source_name) values ('synthea100k');")
-executeSql(conn, "insert into synthea23m.cdm_source (cdm_source_name) values ('synthea23mk');")
+executeSql(conn, "insert into synthea23m.cdm_source (cdm_source_name) values ('synthea23m');")
+
+executeSql(conn, "insert into cmsdesynpuf1k.cdm_source (cdm_source_name) values ('cmsdesynpuf1k');")
+executeSql(conn, "insert into cmsdesynpuf100k.cdm_source (cdm_source_name) values ('cmsdesynpuf100k');")
+executeSql(conn, "insert into cmsdesynpuf23m.cdm_source (cdm_source_name) values ('cmsdesynpuf23m');")
 ```
-
-
-```{r, eval=F}
-# What is the reason for this error?***********************
-# check that all the correct tables exist
-Achilles::validateSchema(
-  connectionDetails = connectionDetails,
-  cdmDatabaseSchema = "mycdm.synthea1k", 
-  resultsDatabaseSchema = "mycdm.synthea1kresults",
-  cdmVersion = "5.3",
-  runCostAnalysis = F,
-  outputFolder = "~/validationOutput")
-```
-
-Here we get an error and a message that an error report was created. Looking at error reports and logs will help with understanding why an error occurred.
 
 
 
@@ -207,9 +198,9 @@ achillesResults <- Achilles::achilles(connectionDetails,
          numThreads = 1,
          sourceName = "Synthea1k", 
          cdmVersion = "5.3",
-         analysisIds = c(0:2, 5), # for demonstartion we will only execute a few analyses
+         analysisIds = c(0,1), # for demonstration we will only execute a few analyses
          runHeel = F,
-         # conceptHierarchy = F,
+         conceptHierarchy = F,
          runCostAnalysis = F)
 
 ```
@@ -330,6 +321,10 @@ Instead of a drug exposure-condition outcome rate let's look at the incidence of
 cohortDatabaseSchema <- "mycdm.work_user1"
 cohortTable <- "cohort"
 cdmDatabaseSchema <- "mycdm.synthea23m"
+```
+
+```{sql connection=con}
+create schema work_user1;
 ```
 
 
