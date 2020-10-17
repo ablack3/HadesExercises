@@ -164,50 +164,54 @@ dbGetQuery(conn, "select * from synthea1k.concept limit 1")
 ```
 
 
-# Example of using an OHDSI tool 
+# Achilles
 In addition to running SQL queries we can use standardized analytic tools that query the database for us.
 
 In this example we will run Achilles which is a powerful database characterization tool.
 
-```{r, eval=F}
-# Make sure that cdm source has at least one row - this fix should be applied before the tutorial.
-# causes error in dqd
-executeSql(conn, "insert into synthea1k.cdm_source (cdm_source_name) values ('synthea1k');")
-executeSql(conn, "insert into synthea100k.cdm_source (cdm_source_name) values ('synthea100k');")
-executeSql(conn, "insert into synthea23m.cdm_source (cdm_source_name) values ('synthea23m');")
-
-executeSql(conn, "insert into cmsdesynpuf1k.cdm_source (cdm_source_name) values ('cmsdesynpuf1k');")
-executeSql(conn, "insert into cmsdesynpuf100k.cdm_source (cdm_source_name) values ('cmsdesynpuf100k');")
-executeSql(conn, "insert into cmsdesynpuf23m.cdm_source (cdm_source_name) values ('cmsdesynpuf23m');")
-```
 
 
 
 ```{r, eval=F}
-# create scratch schema and achilles schema
-executeSql(conn, "create schema username_scratch; create schema username_synthea1k_results;")
+
+# create scratch schema and achilles results schema
+username <- Sys.info()["user"]
+renderTranslateExecuteSql(conn, 
+                          sql = "create schema @scratchSchema; 
+                          create schema @resultsSchema;",
+                          scratchSchema = paste0("scratch_", username),
+                          resultsSchema = paste0("results_", username))
+
+scratchDatabaseSchema <- paste0("mycdm.scratch_", username)
+resultsDatabaseSchema <- paste0("mycdm.results_", username)
 ```
 
 
 ```{r, warning=F}
 achillesResults <- Achilles::achilles(connectionDetails, 
          cdmDatabaseSchema = "mycdm.synthea1k", 
-         resultsDatabaseSchema = "mycdm.username_synthea1k_results",
-         scratchDatabaseSchema = "mycdm.username_scratch",
+         resultsDatabaseSchema = resultsDatabaseSchema,
+         scratchDatabaseSchema = scratchDatabaseSchema,
          vocabDatabaseSchema = "mycdm.synthea1k",
          numThreads = 1,
          sourceName = "Synthea1k", 
          cdmVersion = "5.3",
-         analysisIds = c(0,1), # for demonstration we will only execute a few analyses
+         analysisIds = c(0,1), 
          runHeel = F,
-         conceptHierarchy = F,
          runCostAnalysis = F)
 
 ```
 
+We can take a look at the tables that were created.
+```{r}
+DatabaseConnector::getTableNames(conn, resultsDatabaseSchema)
+```
 
-Achilles results can be viewed in Atlas under the data sources section.
 
+
+Once the results schema is added to the configuration section of Atlas the Achilles results can be viewed in Atlas under the "Data Sources".
+
+# Data Quality Dashboard
 
 Another tool that is helpful to run to check that your CDM is ready for prime time is DataQualityDashboard. As a researcher or data scientist you are probably not the person who created the CDM you want to use. How can you gain confidence that the CDM conforms to the correct specification and that the standardized analytics will work correctly?
 
@@ -230,7 +234,7 @@ dqChecks %>%
 
 ```
 
-We can also open the log that was created
+We can also take a look at the log that was created.
 ```{r, eval=FALSE}
 file.edit("~/synthea1kDQChecks/Synthea1k/log_DqDashboard_Synthea1k.txt")
 ```
@@ -249,7 +253,8 @@ nrow(df)
 colnames(df)
 ```
 
-It does appear that the missing columns are indeed present. perhaps the problem is that we have zero rows.
+We have visit_detail.visit_start_date instead of visit_detail.visit_detail_start_date
+This is good information to know before we try to run standardized analytics.
 
 ```{r}
 df <- dbGetQuery(conn, "select * from synthea1k.COST limit 5")
@@ -259,6 +264,8 @@ colnames(df)
 
 In the case of the cost table it looks like we have a typo in the name "reveue_code_source_value". These types of checks can help avoid errors later on when using OHDSI tools.
 
+
+Another way to run long-running scripts from R is to use "Source as local job". If you like try running all of the data quality checks by sourcing the "run_all_dqd_checks.R" as a local job.
 
 Read about dataQualityDashboard options at https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html
 
@@ -318,13 +325,9 @@ Instead of a drug exposure-condition outcome rate let's look at the incidence of
 
 ```{r}
 # create the parameters we will use for sql queries
-cohortDatabaseSchema <- "mycdm.work_user1"
+cohortDatabaseSchema <- scratchDatabaseSchema
 cohortTable <- "cohort"
 cdmDatabaseSchema <- "mycdm.synthea23m"
-```
-
-```{sql connection=con}
-create schema work_user1;
 ```
 
 

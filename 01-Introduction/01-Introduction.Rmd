@@ -49,12 +49,11 @@ Open your .Renviron file by running
 usethis::edit_r_environ()
 ```
 
-Add your github personal access token along with your database password
+Add your github personal access token (PAT) along with your database password. Note that your personal access token is sensitive and should be treated like a password. If you create a PAT for the tutorial be sure to revoke it after the tutorial.
 
 ```{}
 GITHUB_PAT=llksdjsdfjsdw98sd88sdf9sdf990sdf89we0sd9fsdf9009w9
 DB_PASSWORD=PutYourDatabasePasswordHere
-WEBAPI_PASSWORD=PutYourAtlasPasswordHere
 DB_SERVER=https://mydatabaseserver
 ```
 
@@ -62,9 +61,11 @@ Save and close the file. This is the one and only place where we will store our 
 
 We can protect this file by running
 ```{r, eval=F}
+# cmod 600 -> only the file owner can read and write the file
 system("ls -la ~/.Renviron") # default permissions
 system("chmod 600 ~/.Renviron")
 system("ls -la ~/.Renviron") # restricted permissions
+# Sys.chmod("~/.Renviron", mode = "0644") # reset to default - anyone can read.
 ```
 
 
@@ -94,6 +95,7 @@ There are some additional packages that will also be helpful so let's make sure 
 ```{r, eval=F}
 install.packages("tidyverse", lib = .libPaths()[1])
 install.packages("renv")
+install.packages("DiagrammeR")
 install.packages("RPostgreSQL")
 devtools::install_github("OHDSI/DataQualityDashboard", ref = "v1.2")
 ```

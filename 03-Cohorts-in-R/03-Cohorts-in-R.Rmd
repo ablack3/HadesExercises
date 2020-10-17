@@ -48,26 +48,10 @@ The ROhdsiWebApi package gives us a way to programmatically interact with WebAPI
 
 
 ```{r}
-# devtools::install_github("ablack3/ROhdsiWebApi", ref = "auth2", force = T) # install this version globally prior to tutorial, try to get this merged.
-# unfortunately I don't think this will be merged in time!
-Sys.setenv(TZ="Etc/Universal") # add this to global R startup script or renviron
-```
-
-
-
-```{r}
 library(ROhdsiWebApi)
-baseUrl <- "https://ecosystem.ohdsi.training/WebAPI"
+baseUrl <- "https://eco.ohdsitutorials.amazingawsdemos.com/WebAPI"
 
-# Make sure we can query webapi
 getWebApiVersion(baseUrl)
-
-# Before using some functions we need to authenticate
-authorizeWebApi(baseUrl, 
-                authMethod = "db",
-                webApiUsername = "user1",
-                webApiPassword = Sys.getenv("WEBAPI_PASSWORD"))
-
 ```
 
 
@@ -83,7 +67,7 @@ Download a cohort definition from Atlas.
 
 
 ```{r}
-cohort_def <- getCohortDefinition(cohortId = 50, baseUrl)
+cohort_def <- getCohortDefinition(cohortId = 21, baseUrl)
 str(cohort_def, max.level = 1)
 ```
 
@@ -177,7 +161,7 @@ cohorts %>%
 
 
 ```{r, eval=F}
-ROhdsiWebApi::invokeCohortGeneration(114, baseUrl, sourceKey = "synthea1k")
+ROhdsiWebApi::invokeCohortGeneration(cohorts[1,]$id, baseUrl, sourceKey = "synthea1k")
 ```
 
 
@@ -265,5 +249,4 @@ Cohort Diagnosics can also run in "package" mode. This is helpful when you want 
 
 # Exercise
 Create a new cohort in Atlas. Then run Cohort Diagnostics on that cohort using R. 
-
 
