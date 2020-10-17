@@ -1,3 +1,8 @@
-echo "/dir1/ /dir2/ /dir3/" | xargs -n 1 cp -v filename
+# copy a file to all User home folders
+ls -d $PWD/* | grep User | sudo xargs -n 1 cp ~/.Renviron
 
-ls -d $PWD/* | grep User | sudo xargs -n 1 cp .Renviron
+# remove myResults folder from all user home directories
+sudo find /home -name myResults -print | sudo xargs -n 1 rm -r
+
+# copy exercise folder to all home directoryies
+ls -d $PWD/* | grep User | sudo xargs -n 1 cp -R ~/HadesExercises
