@@ -4,5 +4,5 @@ ls -d $PWD/* | grep User | sudo xargs -n 1 cp ~/.Renviron
 # remove myResults folder from all user home directories
 sudo find /home -name myResults -print | sudo xargs -n 1 rm -r
 
-# copy exercise folder to all home directoryies
+# copy exercise folder to all home directories. Must execute from /home
 ls -d $PWD/* | grep User | sudo xargs -n 1 cp -R ~/HadesExercises
