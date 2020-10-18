@@ -1,0 +1,56 @@
+DBMS:
+redshift
+
+Error:
+java.sql.SQLException: [Amazon](500310) Invalid operation: column "visit_detail_source_value" does not exist in cdmtable;
+
+SQL:
+
+/*********
+FIELD LEVEL check:
+CDM_FIELD - verify the field exists
+
+Parameters used in this template:
+cdmDatabaseSchema = mycdm.synthea1k
+cdmTableName = VISIT_DETAIL
+cdmFieldName = visit_detail_source_value
+
+**********/
+
+
+SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END AS pct_violated_rows, 
+  denominator.num_rows as num_denominator_rows
+FROM
+(
+  select num_violated_rows from
+  (
+    select
+      case when COUNT("visit_detail_source_value") = 0 then 0
+      else 0
+    end as num_violated_rows
+    from mycdm.synthea1k.VISIT_DETAIL cdmTable
+  ) violated_rows
+) violated_row_count,
+( 
+	SELECT 1 as num_rows
+) denominator
+;
+
+R version:
+R version 3.5.3 (2019-03-11)
+
+Platform:
+x86_64-pc-linux-gnu
+
+Attached base packages:
+- stats
+- graphics
+- grDevices
+- utils
+- datasets
+- methods
+- base
+
+Other attached packages:
+- magrittr (1.5)
+- DatabaseConnector (3.0.0)

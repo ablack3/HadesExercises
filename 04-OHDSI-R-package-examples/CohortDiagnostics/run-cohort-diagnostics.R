@@ -16,22 +16,23 @@ databaseIds <- ROhdsiWebApi::getCdmSources(baseUrl)
 
 # Create a dataframe with cohorts that we want to run diagnostics on
 # Note these cohorts must be generated on the datasets we are using
-cohortSetReference <- cohortMetadata %>% 
-  filter(stringr::str_detect(name, "LEGEND|Legend")) %>% 
+cohortSetReference <- cohortMetadata %>%
+  filter(stringr::str_detect(name, "LEGEND|Legend")) %>%
   mutate(atlasId = id,
          atlasName = name,
          cohortId = id,
-         name = stringr::str_remove_all(name, "LEGEND|Legend|\\W")) %>% 
+         name = stringr::str_remove_all(name, "LEGEND|Legend|\\W")) %>%
   select(atlasId, atlasName, cohortId, name)
 
+outputFolder <- "~/HadesExercises/04-OHDSI-R-package-examples/CohortDiagnostics/cohortDiagnosticsOutput"
 
 CohortDiagnostics::runCohortDiagnostics(baseUrl = baseUrl,
                                         connectionDetails = connectionDetails,
                                         cdmDatabaseSchema = "mycdm.synthea100k",
                                         cohortDatabaseSchema = "mycdm.synthea100kresults",
-                                        cohortTable = "cohort", 
+                                        cohortTable = "cohort",
                                         cohortSetReference = cohortSetReference,
-                                        exportFolder = "~/cohortDiagnosticsExport",
+                                        exportFolder = outputFolder,
                                         runInclusionStatistics = F,
                                         databaseId = "synthea100k",
                                         databaseName = "Synthea100k",
@@ -41,19 +42,19 @@ CohortDiagnostics::runCohortDiagnostics(baseUrl = baseUrl,
                                         connectionDetails = connectionDetails,
                                         cdmDatabaseSchema = "mycdm.CMSDESynPUF1k",
                                         cohortDatabaseSchema = "mycdm.CMSDESynPUF1kresults",
-                                        cohortTable = "cohort", 
+                                        cohortTable = "cohort",
                                         cohortSetReference = cohortSetReference,
-                                        exportFolder = "~/cohortDiagnosticsExport",
+                                        exportFolder = outputFolder,
                                         runInclusionStatistics = F,
                                         databaseId = "CMSDESynPUF1k",
                                         databaseName = "CMSDESynPUF1k",
                                         databaseDescription = "CMSDESynPUF1k")
 
 # Combine results into a single file
-preMergeDiagnosticsFiles("~/cohortDiagnosticsExport")
+preMergeDiagnosticsFiles(outputFolder)
 
 # View the results
-# CohortDiagnostics::launchDiagnosticsExplorer("~/cohortDiagnosticsExport")
+# CohortDiagnostics::launchDiagnosticsExplorer(outputFolder)
 
 
 

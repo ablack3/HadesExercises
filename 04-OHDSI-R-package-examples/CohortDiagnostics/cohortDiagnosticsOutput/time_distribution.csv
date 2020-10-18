@@ -1,0 +1,7 @@
+﻿cohort_id,count_value,min_value,max_value,average_value,standard_deviation,median_value,p_10_value,p_25_value,p_75_value,p_90_value,time_metric,database_id
+23,880,1,212,10.367045454545456,25.479662478141268,1,1,1,1,41,time (days) between cohort start and end,CMSDESynPUF1k
+22,26,7,11,7.153846153846154,0.7844106067615353,7,7,7,7,7,time (days) between cohort start and end,CMSDESynPUF1k
+22,26,58,1020,637.9615384615385,288.1004658101059,692,205,440,885,950,observation time (days) after index,CMSDESynPUF1k
+23,880,0,1089,579.6556818181818,286.39388820294334,573,186,352,821,982,observation time (days) after index,CMSDESynPUF1k
+23,880,6,1095,495.55454545454546,282.2501922054261,501,109,257,724,879,observation time (days) prior to index,CMSDESynPUF1k
+22,26,75,1037,442.96153846153845,286.9803449715677,302,145,210,640,890,observation time (days) prior to index,CMSDESynPUF1k

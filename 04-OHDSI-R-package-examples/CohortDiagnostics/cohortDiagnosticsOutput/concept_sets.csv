@@ -1,0 +1,333 @@
+﻿cohort_id,concept_set_id,concept_set_sql,concept_set_name,concept_set_expression
+22,2,"SELECT 2 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
+( 
+  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (262,9203,9201)
+UNION  select c.concept_id
+  from @vocabulary_database_schema.CONCEPT c
+  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  and ca.ancestor_concept_id in (262,9203,9201)
+  and c.invalid_reason is null
+
+) I
+) C",Inpatient or ER visit,"[
+ {
+ ""concept"": {
+ ""CONCEPT_ID"":                      262,
+""CONCEPT_NAME"": ""Emergency Room and Inpatient Visit"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""ERIP"",
+""DOMAIN_ID"": ""Visit"",
+""VOCABULARY_ID"": ""Visit"",
+""CONCEPT_CLASS_ID"": ""Visit"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+},
+{
+ ""concept"": {
+ ""CONCEPT_ID"":                     9203,
+""CONCEPT_NAME"": ""Emergency Room Visit"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""ER"",
+""DOMAIN_ID"": ""Visit"",
+""VOCABULARY_ID"": ""Visit"",
+""CONCEPT_CLASS_ID"": ""Visit"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+},
+{
+ ""concept"": {
+ ""CONCEPT_ID"":                     9201,
+""CONCEPT_NAME"": ""Inpatient Visit"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""IP"",
+""DOMAIN_ID"": ""Visit"",
+""VOCABULARY_ID"": ""Visit"",
+""CONCEPT_CLASS_ID"": ""Visit"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+} 
+]"
+22,3,"SELECT 3 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
+( 
+  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (4329847)
+UNION  select c.concept_id
+  from @vocabulary_database_schema.CONCEPT c
+  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  and ca.ancestor_concept_id in (4329847)
+  and c.invalid_reason is null
+
+) I
+LEFT JOIN
+(
+  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (314666)
+UNION  select c.concept_id
+  from @vocabulary_database_schema.CONCEPT c
+  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  and ca.ancestor_concept_id in (314666)
+  and c.invalid_reason is null
+
+) E ON I.concept_id = E.concept_id
+WHERE E.concept_id is null
+) C",[LEGEND HTN] Acute myocardial Infarction,"[
+ {
+ ""concept"": {
+ ""CONCEPT_ID"":                  4329847,
+""CONCEPT_NAME"": ""Myocardial infarction"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""22298006"",
+""DOMAIN_ID"": ""Condition"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+},
+{
+ ""concept"": {
+ ""CONCEPT_ID"":                   314666,
+""CONCEPT_NAME"": ""Old myocardial infarction"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""1755008"",
+""DOMAIN_ID"": ""Condition"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": true,
+""includeDescendants"": true,
+""includeMapped"": false 
+} 
+]"
+22,4,"SELECT 4 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
+( 
+  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (4048809,321042,442289,4317150,4132309)
+UNION  select c.concept_id
+  from @vocabulary_database_schema.CONCEPT c
+  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  and ca.ancestor_concept_id in (4048809,321042,442289,4317150,4132309)
+  and c.invalid_reason is null
+
+) I
+LEFT JOIN
+(
+  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (437894)
+UNION  select c.concept_id
+  from @vocabulary_database_schema.CONCEPT c
+  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  and ca.ancestor_concept_id in (437894)
+  and c.invalid_reason is null
+
+) E ON I.concept_id = E.concept_id
+WHERE E.concept_id is null
+) C",[LEGEND HTN] Sudden cardiac death,"[
+ {
+ ""concept"": {
+ ""CONCEPT_ID"":                  4048809,
+""CONCEPT_NAME"": ""Brainstem death"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""230802007"",
+""DOMAIN_ID"": ""Condition"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+},
+{
+ ""concept"": {
+ ""CONCEPT_ID"":                   321042,
+""CONCEPT_NAME"": ""Cardiac arrest"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""410429000"",
+""DOMAIN_ID"": ""Condition"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+},
+{
+ ""concept"": {
+ ""CONCEPT_ID"":                   442289,
+""CONCEPT_NAME"": ""Death in less than 24 hours from onset of symptoms"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""53559009"",
+""DOMAIN_ID"": ""Observation"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+},
+{
+ ""concept"": {
+ ""CONCEPT_ID"":                  4317150,
+""CONCEPT_NAME"": ""Sudden cardiac death"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""95281009"",
+""DOMAIN_ID"": ""Condition"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+},
+{
+ ""concept"": {
+ ""CONCEPT_ID"":                  4132309,
+""CONCEPT_NAME"": ""Sudden death"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""26636000"",
+""DOMAIN_ID"": ""Observation"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+},
+{
+ ""concept"": {
+ ""CONCEPT_ID"":                   437894,
+""CONCEPT_NAME"": ""Ventricular fibrillation"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""71908006"",
+""DOMAIN_ID"": ""Condition"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": true,
+""includeDescendants"": true,
+""includeMapped"": false 
+} 
+]"
+23,9,"SELECT 9 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
+( 
+  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (200219)
+UNION  select c.concept_id
+  from @vocabulary_database_schema.CONCEPT c
+  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  and ca.ancestor_concept_id in (200219)
+  and c.invalid_reason is null
+
+) I
+) C",[LEGEND HTN] Abdominal pain,"[
+ {
+ ""concept"": {
+ ""CONCEPT_ID"":                   200219,
+""CONCEPT_NAME"": ""Abdominal pain"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""21522001"",
+""DOMAIN_ID"": ""Condition"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+} 
+]"
+24,11,"SELECT 11 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
+( 
+  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (439141)
+UNION  select c.concept_id
+  from @vocabulary_database_schema.CONCEPT c
+  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  and ca.ancestor_concept_id in (439141)
+  and c.invalid_reason is null
+
+) I
+) C",[LEGEND HTN] Abnormal weight gain,"[
+ {
+ ""concept"": {
+ ""CONCEPT_ID"":                   439141,
+""CONCEPT_NAME"": ""Abnormal weight gain"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""161833006"",
+""DOMAIN_ID"": ""Observation"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+} 
+]"
+25,12,"SELECT 12 as codeset_id, c.concept_id FROM (select distinct I.concept_id FROM
+( 
+  select concept_id from @vocabulary_database_schema.CONCEPT where concept_id in (435928)
+UNION  select c.concept_id
+  from @vocabulary_database_schema.CONCEPT c
+  join @vocabulary_database_schema.CONCEPT_ANCESTOR ca on c.concept_id = ca.descendant_concept_id
+  and ca.ancestor_concept_id in (435928)
+  and c.invalid_reason is null
+
+) I
+) C",[LEGEND HTN] Abnormal weight loss,"[
+ {
+ ""concept"": {
+ ""CONCEPT_ID"":                   435928,
+""CONCEPT_NAME"": ""Abnormal weight loss"",
+""STANDARD_CONCEPT"": ""S"",
+""STANDARD_CONCEPT_CAPTION"": ""Standard"",
+""INVALID_REASON"": ""V"",
+""INVALID_REASON_CAPTION"": ""Valid"",
+""CONCEPT_CODE"": ""267024001"",
+""DOMAIN_ID"": ""Observation"",
+""VOCABULARY_ID"": ""SNOMED"",
+""CONCEPT_CLASS_ID"": ""Clinical Finding"" 
+},
+""isExcluded"": false,
+""includeDescendants"": true,
+""includeMapped"": false 
+} 
+]"

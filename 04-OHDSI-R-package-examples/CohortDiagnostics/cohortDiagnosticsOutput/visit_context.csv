@@ -1,0 +1,25 @@
+﻿cohort_id,visit_concept_id,visit_context,subjects,database_id
+23,0,Before,414,CMSDESynPUF1k
+23,9202,During visit,11,CMSDESynPUF1k
+23,9202,After,200,CMSDESynPUF1k
+23,9201,On visit start,21,CMSDESynPUF1k
+22,9201,Before,-5,CMSDESynPUF1k
+23,0,On visit start,453,CMSDESynPUF1k
+22,9201,On visit start,24,CMSDESynPUF1k
+22,0,On visit start,-5,CMSDESynPUF1k
+23,9202,On visit start,120,CMSDESynPUF1k
+22,9201,After,5,CMSDESynPUF1k
+22,0,Before,21,CMSDESynPUF1k
+23,9201,Before,26,CMSDESynPUF1k
+22,9202,After,-5,CMSDESynPUF1k
+22,9202,During visit,-5,CMSDESynPUF1k
+23,9201,During visit,7,CMSDESynPUF1k
+22,0,During visit,-5,CMSDESynPUF1k
+22,0,After,22,CMSDESynPUF1k
+23,9201,After,24,CMSDESynPUF1k
+22,9201,During visit,-5,CMSDESynPUF1k
+23,0,During visit,12,CMSDESynPUF1k
+22,9202,On visit start,-5,CMSDESynPUF1k
+23,9202,Before,191,CMSDESynPUF1k
+23,0,After,429,CMSDESynPUF1k
+22,9202,Before,9,CMSDESynPUF1k

@@ -1,0 +1,287 @@
+﻿concept_id,concept_synonym_name,language_concept_id
+200219,Abdominal pain (finding),4180186
+200219,Abdominal pain,4180186
+200219,AP - Abdominal pain,4180186
+438447,Acute myocardial infarction of inferolateral wall (disorder),4180186
+438447,Acute myocardial infarction of inferolateral wall,4180186
+438447,Acute inferolateral myocardial infarction,4180186
+194491,Tenderness of epigastrium,4180186
+194491,Tenderness of epigastrium (finding),4180186
+438170,Acute myocardial infarction of inferior wall (disorder),4180186
+438170,Acute inferior myocardial infarction,4180186
+438170,Acute myocardial infarction of inferior wall,4180186
+438170,Acute myocardial infarction of diaphragmatic wall,4180186
+444406,Acute subendocardial infarction (disorder),4180186
+444406,Acute subendocardial infarction,4180186
+439141,Abnormal weight gain,4180186
+439141,Abnormal weight gain (finding),4180186
+439141,Abnormal increase in weight,4180186
+198263,Right upper quadrant pain (finding),4180186
+198263,Right upper quadrant pain,4180186
+197981,Abdominal tenderness (finding),4180186
+197981,Abdominal tenderness,4180186
+201690,Renal colic (finding),4180186
+201690,Renal colic,4180186
+40490986,Tenderness of right lower quadrant of abdomen (finding),4180186
+40490986,Tenderness of right lower quadrant of abdomen,4180186
+40490984,Tenderness of left upper quadrant of abdomen,4180186
+40490984,Tenderness of left upper quadrant of abdomen (finding),4180186
+321042,Cardiac arrest (disorder),4180186
+321042,Cardiac arrest,4180186
+193322,Right lower quadrant pain (finding),4180186
+193322,Right lower quadrant pain,4180186
+44822304,"Abdominal pain, other specified site",4180186
+44822304,Abdmnal pain oth spcf st,4180186
+44834722,"Acute myocardial infarction, true posterior wall infarction",4180186
+44820857,"Acute myocardial infarction, of anterolateral wall",4180186
+44828149,Loss of weight,4180186
+44828149,Abnormal loss of weight,4180186
+44820058,Abnormal loss of weight and underweight,4180186
+44832374,"AMI inferior wall,subseq",4180186
+44832374,"Acute myocardial infarction of other inferior wall, subsequent episode of care",4180186
+44834718,"Acute myocardial infarction, of other anterior wall",4180186
+44831237,"True post infarct,subseq",4180186
+44831237,"True posterior wall infarction, subsequent episode of care",4180186
+44819700,"AMI inferolateral, init",4180186
+44819700,"Acute myocardial infarction of inferolateral wall, initial episode of care",4180186
+44820860,"AMI inferopost, subseq",4180186
+44820860,"Acute myocardial infarction of inferoposterior wall, subsequent episode of care",4180186
+44823111,"AMI anterolateral, init",4180186
+44823111,"Acute myocardial infarction of anterolateral wall, initial episode of care",4180186
+44824632,"Abdominal tenderness, left lower quadrant",4180186
+44824632,Abdmnal tndr lt lwr quad,4180186
+44824631,"Abdominal tenderness, right lower quadrant",4180186
+44824631,Abdmnal tndr rt lwr quad,4180186
+44833561,"AMI inferopost, initial",4180186
+44833561,"Acute myocardial infarction of inferoposterior wall, initial episode of care",4180186
+44835089,"Abdominal pain, epigastric",4180186
+44835089,Abdmnal pain epigastric,4180186
+44825430,"AMI NOS, initial",4180186
+44825430,"Acute myocardial infarction of unspecified site, initial episode of care",4180186
+44835926,"AMI inferior wall, init",4180186
+44835926,"Acute myocardial infarction of other inferior wall, initial episode of care",4180186
+44819697,"AMI anterior wall,subseq",4180186
+44819697,"Acute myocardial infarction of other anterior wall, subsequent episode of care",4180186
+44819699,"AMI inferolateral,unspec",4180186
+44819699,"Acute myocardial infarction of inferolateral wall, episode of care unspecified",4180186
+44828973,"Subendo infarct, subseq",4180186
+44828973,"Subendocardial infarction, subsequent episode of care",4180186
+44834720,"AMI lateral NEC, initial",4180186
+44834720,"Acute myocardial infarction of other lateral wall, initial episode of care",4180186
+0,No matching concept,4180186
+44831357,Dysmenorrhea,4180186
+44819702,"Acute myocardial infarction, unspecified site",4180186
+2617454,"Level 1 hospital emergency department visit provided in a type b emergency department; (the ed must meet at least one of the following requirements: (1) it is licensed by the state in which it is located under applicable state law as an emergency room or emergency department; (2) it is held out to the public (by name, posted signs, advertising, or other means) as a place that provides care for emergency medical conditions on an urgent basis without requiring a previously scheduled appointment; or (3) during the calendar year immediately preceding the calendar year in which a determination under 42 cfr 489.24 is being made, based on a representative sample of patient visits that occurred during that calendar year, it provides at least one-third of all of its outpatient visits for the treatment of emergency medical conditions on an urgent basis without requiring a previously scheduled appointment)",4180186
+2617454,Lev 1 hosp type b ed visit,4180186
+2617452,"Hospital observation service, per hour",4180186
+2617452,Hospital observation per hr,4180186
+2617231,Partial hosp prog service,4180186
+2617231,"Occupational therapy services requiring the skills of a qualified occupational therapist, furnished as a component of a partial hospitalization treatment program, per session (45 minutes or more)",4180186
+2617478,Inter active grp psych parti,4180186
+2617478,"Interactive group psychotherapy, in a partial hospitalization setting, approximately 45 to 50 minutes",4180186
+38001110,"Acute myocardial infarction, discharged alive w/o CC/MCC",4180186
+44835929,Postmyocardial infarction syndrome,4180186
+44835929,Post MI syndrome,4180186
+44826643,Other sequelae of MI NEC,4180186
+44826643,"Certain sequelae of myocardial infarction, not elsewhere classified, other",4180186
+44820864,Old myocardial infarction,4180186
+44820864,Old myocardial infarct,4180186
+435561,Certain current complications following acute myocardial infarction (disorder),4180186
+435561,Certain current complications following acute myocardial infarction,4180186
+44827330,Family history of sudden cardiac death (SCD),4180186
+44827330,Fam hx sudden card death,4180186
+44819513,Arrested development following protein-calorie malnutrition,4180186
+44819513,Arrest devel d/t malnutr,4180186
+73855,Arrest of bone development AND/OR growth (disorder),4180186
+73855,Arrest of bone development AND/OR growth,4180186
+1180186,meclofenamate (as meclofenamate sodium) 100 MG Oral Capsule,4180186
+1180186,Meclofenamate 100 MG Oral Capsule,4180186
+45179123,Meclofenamate 100 MG Oral Capsule [Meclomen],4180186
+19033211,Meclomen (as meclofenamate sodium) 100 MG Oral Capsule,4180186
+19033211,Meclomen 100 MG Oral Capsule,4180186
+19033211,Meclofenamate 100 MG Oral Capsule [Meclomen],4180186
+435773,Arrested development following protein-calorie malnutrition (disorder),4180186
+435773,Physical retardation due to malnutrition,4180186
+435773,Arrested development following protein-calorie malnutrition,4180186
+435773,Nutritional dwarfism,4180186
+44825815,"Abdominal pain, periumbilic",4180186
+44825815,Abdmnal pain periumbilic,4180186
+44825429,"Subendo infarct, initial",4180186
+44825429,"Subendocardial infarction, initial episode of care",4180186
+44822308,"Abdominal tenderness, periumbilic",4180186
+44822308,Abdmnal tndr periumbilic,4180186
+44836296,"Abdominal pain, right lower quadrant",4180186
+44836296,Abdmnal pain rt lwr quad,4180186
+44994209,Meclofenamate 50 MG Oral Capsule,4180186
+4116950,Tenderness of central region (finding),4180186
+4116950,Tenderness of central region,4180186
+1180188,meclofenamate (as meclofenamate sodium) 50 MG Oral Capsule,4180186
+1180188,Meclofenamate 50 MG Oral Capsule,4180186
+194175,Left upper quadrant pain,4180186
+194175,Left upper quadrant pain (finding),4180186
+44834724,"AMI NEC, initial",4180186
+44834724,"Acute myocardial infarction of other specified sites, initial episode of care",4180186
+9202,Outpatient Visit,4180186
+40481920,Periumbilical abdominal pain,4180186
+40481920,Periumbilical pain,4180186
+40481920,Periumbilical pain (finding),4180186
+439693,True posterior myocardial infarction (disorder),4180186
+439693,True posterior myocardial infarction,4180186
+439693,True posterior wall infarction,4180186
+44820064,Flatul/eructat/gas pain,4180186
+44820064,"Flatulence, eructation, and gas pain",4180186
+44824237,"AMI anterolateral,unspec",4180186
+44824237,"Acute myocardial infarction of anterolateral wall, episode of care unspecified",4180186
+319038,Postmyocardial infarction pericarditis,4180186
+319038,Postmyocardial infarction syndrome,4180186
+319038,Postmyocardial infarction syndrome (disorder),4180186
+319038,Post-myocardial infarction syndrome,4180186
+319038,Dressler's syndrome,4180186
+442289,Death in less than 24 hours from onset of symptoms,4180186
+442289,Death in less than 24 hours from onset of symptoms (event),4180186
+2617477,Grp psych partial hosp 45-50,4180186
+2617477,"Group psychotherapy other than of a multiple-family group, in a partial hospitalization setting, approximately 45 to 50 minutes",4180186
+44834719,"AMI inferior wall,unspec",4180186
+44834719,"Acute myocardial infarction of other inferior wall, episode of care unspecified",4180186
+44834721,"AMI lateral NEC, subseq",4180186
+44834721,"Acute myocardial infarction of other lateral wall, subsequent episode of care",4180186
+194755,Abdominal tenderness of left lower quadrant (finding),4180186
+194755,Abdominal tenderness of left lower quadrant,4180186
+312327,AMI - Acute myocardial infarction,4180186
+312327,Acute myocardial infarction,4180186
+312327,Acute myocardial infarction (disorder),4180186
+317109,Respiratory arrest (disorder),4180186
+317109,Respiratory arrest,4180186
+434376,Acute myocardial infarction of anterior wall (disorder),4180186
+434376,Acute anterior myocardial infarction,4180186
+434376,Acute myocardial infarction of anterior wall,4180186
+2617342,Unscheduled or emergency dialysis treatment for an esrd patient in a hospital outpatient department that is not certified as an esrd facility,4180186
+2617342,Unsched dialysis esrd pt hos,4180186
+44837432,Abnormal weight gain,4180186
+44826147,Personal history of sudden cardiac arrest,4180186
+44826147,Hx sudden cardiac arrest,4180186
+38001112,"Acute myocardial infarction, expired w CC",4180186
+38001126,"Cardiac arrest, unexplained w/o CC/MCC",4180186
+2617457,"Level 4 hospital emergency department visit provided in a type b emergency department; (the ed must meet at least one of the following requirements: (1) it is licensed by the state in which it is located under applicable state law as an emergency room or emergency department; (2) it is held out to the public (by name, posted signs, advertising, or other means) as a place that provides care for emergency medical conditions on an urgent basis without requiring a previously scheduled appointment; or (3) during the calendar year immediately preceding the calendar year in which a determination under 42 cfr 489.24 is being made, based on a representative sample of patient visits that occurred during that calendar year, it provides at least one-third of all of its outpatient visits for the treatment of emergency medical conditions on an urgent basis without requiring a previously scheduled appointment)",4180186
+2617457,Lev 4 hosp type b ed visit,4180186
+194696,Menstrual cramps,4180186
+194696,Dysmenorrhea (disorder),4180186
+194696,Period pain,4180186
+194696,Dysmenorrhea,4180186
+194696,Dysmenorrhoea,4180186
+194696,Menorrhalgia,4180186
+44823455,"Abdominal pain, unspecified site",4180186
+44823455,Abdmnal pain unspcf site,4180186
+44994543,Meclofenamate 50 MG Oral Capsule,4180186
+44831597,"Abdominal pain, left upper quadrant",4180186
+44831597,Abdmnal pain lft up quad,4180186
+44823459,"Abdominal tenderness, other specified site",4180186
+44823459,Abdmnal tndr oth spcf st,4180186
+38001124,"Cardiac arrest, unexplained w MCC",4180186
+195083,Left lower quadrant pain (finding),4180186
+195083,Left lower quadrant pain,4180186
+44835928,"AMI NOS, unspecified",4180186
+44835928,"Acute myocardial infarction of unspecified site, episode of care unspecified",4180186
+44819698,"Acute myocardial infarction, of inferolateral wall",4180186
+2617453,Direct refer hospital observ,4180186
+2617453,Direct admission of patient for hospital observation care,4180186
+44831601,"Abdominal tenderness, right upper quadrant",4180186
+44831601,Abdmnal tndr rt upr quad,4180186
+2617455,"Level 2 hospital emergency department visit provided in a type b emergency department; (the ed must meet at least one of the following requirements: (1) it is licensed by the state in which it is located under applicable state law as an emergency room or emergency department; (2) it is held out to the public (by name, posted signs, advertising, or other means) as a place that provides care for emergency medical conditions on an urgent basis without requiring a previously scheduled appointment; or (3) during the calendar year immediately preceding the calendar year in which a determination under 42 cfr 489.24 is being made, based on a representative sample of patient visits that occurred during that calendar year, it provides at least one-third of all of its outpatient visits for the treatment of emergency medical conditions on an urgent basis without requiring a previously scheduled appointment)",4180186
+2617455,Lev 2 hosp type b ed visit,4180186
+44824633,"Abdominal tenderness, epigastric",4180186
+44824633,Abdmnal tndr epigastric,4180186
+44825733,Arrest of bone growth,4180186
+44825733,Arrest of bone development or growth,4180186
+438438,Acute anterolateral myocardial infarction,4180186
+438438,Acute myocardial infarction of anterolateral wall,4180186
+438438,Acute myocardial infarction of anterolateral wall (disorder),4180186
+44830079,"Acute myocardial infarction, of other lateral wall",4180186
+44827782,"AMI anterior wall, init",4180186
+44827782,"Acute myocardial infarction of other anterior wall, initial episode of care",4180186
+44924018,Meclofenamate 100 MG Oral Capsule,4180186
+44832373,"Acute myocardial infarction, of inferoposterior wall",4180186
+44832375,"AMI lateral NEC, unspec",4180186
+44832375,"Acute myocardial infarction of other lateral wall, episode of care unspecified",4180186
+44822322,Respiratory arrest,4180186
+44819701,"Acute myocardial infarction, subendocardial infarction",4180186
+44831236,"AMI anterior wall,unspec",4180186
+44831236,"Acute myocardial infarction of other anterior wall, episode of care unspecified",4180186
+438172,Atrial septal defect due to and following acute myocardial infarction,4180186
+438172,Atrial septal defect as current complication following acute myocardial infarction,4180186
+438172,Atrial septal defect due to and following acute myocardial infarction (disorder),4180186
+44832376,"AMI NEC, subsequent",4180186
+44832376,"Acute myocardial infarction of other specified sites, subsequent episode of care",4180186
+44837099,"True post infarct, init",4180186
+44837099,"True posterior wall infarction, initial episode of care",4180186
+436706,Acute lateral myocardial infarction,4180186
+436706,Acute myocardial infarction of lateral wall,4180186
+436706,Acute myocardial infarction of lateral wall (disorder),4180186
+44833923,"Abdominal pain, right upper quadrant",4180186
+44833923,Abdmnal pain rt upr quad,4180186
+44835088,Abdominal pain,4180186
+44831238,Acute coronary occlusion without myocardial infarction,4180186
+44831238,Acute cor occlsn w/o MI,4180186
+435928,Abnormal weight loss,4180186
+435928,Abnormal weight loss (finding),4180186
+435928,Abnormal decrease in weight,4180186
+44820861,"AMI NOS, subsequent",4180186
+44820861,"Acute myocardial infarction of unspecified site, subsequent episode of care",4180186
+441579,Acute myocardial infarction of inferoposterior wall,4180186
+441579,Acute myocardial infarction of inferoposterior wall (disorder),4180186
+441579,Acute inferoposterior infarction,4180186
+197381,Epigastric pain (finding),4180186
+197381,Epigastric pain,4180186
+44826636,"AMI NEC, unspecified",4180186
+44826636,"Acute myocardial infarction of other specified sites, episode of care unspecified",4180186
+442764,Anal pain (finding),4180186
+442764,Anal pain,4180186
+314666,Old myocardial infarction (disorder),4180186
+314666,Old myocardial infarction,4180186
+314666,Healed coronary,4180186
+314666,Healed myocardial infarction,4180186
+40488954,Tenderness of right upper quadrant of abdomen (finding),4180186
+40488954,Tenderness of right upper quadrant of abdomen,4180186
+44820858,"AMI anterolateral,subseq",4180186
+44820858,"Acute myocardial infarction of anterolateral wall, subsequent episode of care",4180186
+435937,Sudden infant death syndrome (finding),4180186
+435937,SIDS - Sudden infant death syndrome,4180186
+435937,Cot death,4180186
+435937,Unexpected sudden death of infant,4180186
+435937,SIDS,4180186
+435937,Crib death,4180186
+435937,Sudden infant death syndrome,4180186
+44835927,"Subendo infarct, unspec",4180186
+44835927,"Subendocardial infarction, episode of care unspecified",4180186
+201418,"Flatulence, eructation and gas pain",4180186
+201418,"Flatulence, eructation and gas pain (finding)",4180186
+38001125,"Cardiac arrest, unexplained w CC",4180186
+44820951,Anal or rectal pain,4180186
+44837443,"Abdominal tenderness, left upper quadrant",4180186
+44837443,Abdmnal tndr lft up quad,4180186
+2617456,"Level 3 hospital emergency department visit provided in a type b emergency department; (the ed must meet at least one of the following requirements: (1) it is licensed by the state in which it is located under applicable state law as an emergency room or emergency department; (2) it is held out to the public (by name, posted signs, advertising, or other means) as a place that provides care for emergency medical conditions on an urgent basis without requiring a previously scheduled appointment; or (3) during the calendar year immediately preceding the calendar year in which a determination under 42 cfr 489.24 is being made, based on a representative sample of patient visits that occurred during that calendar year, it provides at least one-third of all of its outpatient visits for the treatment of emergency medical conditions on an urgent basis without requiring a previously scheduled appointment)",4180186
+2617456,Lev 3 hosp type b ed visit,4180186
+44826979,"Abdominal tenderness, unspecified site",4180186
+44826979,Abdmnal tndr unspcf site,4180186
+38001113,"Acute myocardial infarction, expired w/o CC/MCC",4180186
+44831593,Renal colic,4180186
+44825442,Cardiac arrest,4180186
+197988,Generalised abdominal pain,4180186
+197988,General abdominal pain-symptom,4180186
+197988,Generalized abdominal pain,4180186
+197988,Generalized abdominal pain (finding),4180186
+9201,Inpatient Visit,4180186
+44837452,Death within 24 hr sympt,4180186
+44837452,"Death occurring in less than 24 hours from onset of symptoms, not otherwise explained",4180186
+44836297,"Abdominal pain, generalized",4180186
+44836297,Abdmnal pain generalized,4180186
+443629,Generalized abdominal tenderness,4180186
+443629,Generalised abdominal tenderness,4180186
+443629,Generalized abdominal tenderness (finding),4180186
+44822309,"Abdominal tenderness, generalized",4180186
+44822309,Abdmnal tndr generalized,4180186
+38001108,"Acute myocardial infarction, discharged alive w MCC",4180186
+44826990,Sudden infant death syndrome,4180186
+44826990,Sudden infant death synd,4180186
+44825814,"Abdominal pain, left lower quadrant",4180186
+44825814,Abdmnal pain lt lwr quad,4180186

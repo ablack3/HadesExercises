@@ -1,0 +1,49 @@
+Characteristic,"% (n = 6,891)",Characteristic,"% (n = 6,891)"
+Age group,,Age group,
+    0 -   4, 11.2,    0 -   4, 11.2
+    5 -   9, 15.4,    5 -   9, 15.4
+   10 -  14, 14.4,   10 -  14, 14.4
+   15 -  19, 16.0,   15 -  19, 16.0
+   20 -  24, 14.0,   20 -  24, 14.0
+   25 -  29, 12.8,   25 -  29, 12.8
+   30 -  34, 13.6,   30 -  34, 13.6
+   35 -  39, 13.1,   35 -  39, 13.1
+   40 -  44, 10.3,   40 -  44, 10.3
+   45 -  49,  9.5,   45 -  49,  9.5
+   50 -  54, 11.1,   50 -  54, 11.1
+   55 -  59, 11.3,   55 -  59, 11.3
+   60 -  64, 10.9,   60 -  64, 10.9
+   65 -  69,  8.9,   65 -  69,  8.9
+   70 -  74,  8.4,   70 -  74,  8.4
+   75 -  79,  6.5,   75 -  79,  6.5
+   80 -  84,  5.0,   80 -  84,  5.0
+   85 -  89,  2.8,   85 -  89,  2.8
+   90 -  94,  2.1,   90 -  94,  2.1
+   95 -  99,  1.2,   95 -  99,  1.2
+  100 - 104,  1.2,  100 - 104,  1.2
+  105 - 109,  0.2,  105 - 109,  0.2
+Gender: female, 67.9,Gender: female, 67.9
+Race,,Race,
+  race = Asian, 11.6,  race = Asian, 11.6
+  race = Black or African American, 14.4,  race = Black or African American, 14.4
+  race = White,152.6,  race = White,152.6
+Ethnicity,,Ethnicity,
+  ethnicity = Hispanic or Latino, 20.2,  ethnicity = Hispanic or Latino, 20.2
+Medical history: General,,Medical history: General,
+  Acute respiratory disease,  6.0,  Acute respiratory disease,  6.0
+  Attention deficit hyperactivity disorder,  0.2,  Attention deficit hyperactivity disorder,  0.2
+  Chronic obstructive lung disease,  0.0,  Chronic obstructive lung disease,  0.0
+  Dementia,  0.3,  Dementia,  0.3
+  Depressive disorder,  0.0,  Depressive disorder,  0.0
+  Diabetes mellitus,  0.1,  Diabetes mellitus,  0.1
+  Hyperlipidemia,  0.4,  Hyperlipidemia,  0.4
+  Hypertensive disorder,  0.6,  Hypertensive disorder,  0.6
+  Osteoarthritis,  0.3,  Osteoarthritis,  0.3
+  Renal impairment,  0.2,  Renal impairment,  0.2
+  Urinary tract infectious disease,  0.1,  Urinary tract infectious disease,  0.1
+  Visual system disorder,  0.3,  Visual system disorder,  0.3
+Medical history: Cardiovascular disease,,Medical history: Cardiovascular disease,
+  Atrial fibrillation,  0.4,  Atrial fibrillation,  0.4
+  Cerebrovascular disease,  0.4,  Cerebrovascular disease,  0.4
+  Coronary arteriosclerosis,  3.5,  Coronary arteriosclerosis,  3.5
+  Heart disease,100.0,  Heart disease,100.0
