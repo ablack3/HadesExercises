@@ -113,7 +113,7 @@ cat(substr(chd_sql, 1, 200))
 We can also programatically upload cohort cohort definitions to Atlas which you might want to do after setting up Atlas for the first time. Instead of creating all your cohorts from scratch you can simply batch import large numbers of pre-defined and tested cohorts from OHDSI studies like LEGEND.
 
 ```{r, eval=F}
-postCohortDefinition(name = "[Legend] Coronary Heart Disease",
+postCohortDefinition(name = "[test] Coronary Heart Disease",
                      cohortDefinition = chd_def,
                      baseUrl = baseUrl)
 ```

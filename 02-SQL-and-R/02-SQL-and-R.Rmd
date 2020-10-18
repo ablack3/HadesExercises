@@ -88,9 +88,8 @@ Note that if we make an error in our sql query we may need to send the rollback 
 
 # Get to know your schemas
 
-In addition to knowing how to connect to the database we also want need to have three schemas available
+In addition to knowing how to connect to the database we also want need to have the following schemas available
 
-**permissions**
 1) cdmDatabaseSchema - the schema where your cdm lives (usually each cdm gets its own schema)
 2) cohortDatabaseSchema - A schema where cohort tables can be created. You must have write access to this schema.
 3) vocabDatabaseSchema - The schema where the vocabulary tables live (Usually same as the cdmDatabaseSchema)
@@ -173,6 +172,7 @@ In this example we will run Achilles which is a powerful database characterizati
 
 
 ```{r, eval=F}
+rm(resultsDatabaseSchema)
 
 # create scratch schema and achilles results schema
 username <- Sys.info()["user"]

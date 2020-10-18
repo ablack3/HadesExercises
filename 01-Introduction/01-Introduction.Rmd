@@ -117,7 +117,6 @@ In RStudio open tools -> Global Options
 Make sure the "restore workspace to .Rdata at startup" is not checked 
 Set "Save workspace to .Rdata on exit" to Never
 
-![](images/rstudio_options.png)
 
 A really short program to check that we have the Hades R packages installed an working is
 
